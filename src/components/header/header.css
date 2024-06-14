@@ -1,0 +1,10 @@
+header {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: bold;
+    font-size: 27px;
+
+    p {
+        padding: 15px;
+    }
+}

@@ -1,0 +1,28 @@
+.col {
+    height: 100%;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.row {
+    height: 100%;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.login-form {
+    height: 100%;
+    width: 100%;
+    background-color: var(--base-color);
+}
+
+.sponsor-info{
+    height: 100%;
+    width: 100%;
+
+    background-color: var(--base-color);
+}
