@@ -2,9 +2,11 @@ header {
     background-color: var(--accent-color);
     color: white;
     font-weight: bold;
-    font-size: 27px;
+    font-size: 24px;
+    height: 8vh;
 
     p {
-        padding: 15px;
+        padding: 10px;
+        padding-bottom: 15px;
     }
 }

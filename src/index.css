@@ -9,8 +9,32 @@
 }
 
 body {
-  background-color: var(--main-bg-color);
 
   font-family: Inter, Tahoma, Verdana, sans-serif;
+  color: var(--text-color)
 
+}
+
+main {
+  height: 92vh;
+}
+
+button{
+  cursor: pointer;
+
+  background-color:var(--text-color);
+  border-radius: 9px;
+
+  color:white;
+  font-weight: bold;
+  font-size:18px;
+
+  height:55px;
+  width: 100%;
+}
+
+input{
+  height:44px;
+  border-radius: 16px;
+  border: 0px;
 }
