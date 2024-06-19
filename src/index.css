@@ -28,13 +28,36 @@ button{
   color:white;
   font-weight: bold;
   font-size:18px;
+  border: none;
 
   height:55px;
   width: 100%;
+
+  transition: all 0.5s;
+
+  &:hover {
+    background-color: white;
+    color: var(--text-color);
+    transition: all 0.5s;
+  }
 }
 
 input{
   height:44px;
   border-radius: 16px;
-  border: 0px;
+  border: none;
+}
+
+.image-holder {
+  position: relative;
+  overflow: hidden;
+
+  img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }    
 }
