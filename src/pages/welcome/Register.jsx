@@ -2,10 +2,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import SponsorInfo from '../../components/sponsor-info/SponsorInfo';
 import EmailInput from '../../components/ui/EmailInput';
 import PasswordInput from '../../components/ui/PasswordInput';
+import TextInput from '../../components/ui/TextInput';
 
 import './welcome-page.css'
 
-export default function LoginPage({}) {
+export default function RegisterPage({}) {
   const methods = useForm();
 
   const onSubmit = (data) => {
@@ -18,16 +19,17 @@ export default function LoginPage({}) {
         <div className="input-form-wrapper">
             <div className="form-wrapper">
                 <div className="form">
-                    <h2>Hello Again!</h2>
+                    <h2>Get started!</h2>
                     <FormProvider {...methods}>
                         <form onSubmit={methods.handleSubmit(onSubmit)}>
+                            <TextInput name='Username'/>
                             <EmailInput/>
                             <PasswordInput />
-                        <button type="submit">Login</button>
+                        <button type="submit">Register</button>
                         </form>
                     </FormProvider>
-                    <p className="text-sm">Don't have an account yet?</p>
-                    <h3>Register now</h3>
+                    <p className="text-sm">Already have an account?</p>
+                    <h3>Login</h3>
                 </div>
             </div>
         </div>
