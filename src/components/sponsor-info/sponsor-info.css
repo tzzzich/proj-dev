@@ -1,0 +1,39 @@
+.sponsor-info-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 100%;
+}
+.sponsor-info {
+    width: 520px;
+    height: 605px;
+
+    h2{
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .image-holder.sponsor-image {
+        height: 270px;
+        width: 100%;
+        border-top-right-radius: 35px; 
+        border-top-left-radius: 35px; 
+    }
+
+    .credits-wrapper{
+        height: 272px;
+        background-color: var(--secondary-color);
+        border-radius: 0 0 35px 35px;
+
+        .credits{
+            padding-top: 70px;
+            padding-left: 65px;
+            color: var(--text-color);
+            font-weight: bold;
+
+            ul, li{
+                margin-left: 10px;
+            }
+        }
+    }
+}

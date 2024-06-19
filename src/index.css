@@ -46,6 +46,30 @@ input{
   height:44px;
   border-radius: 16px;
   border: none;
+  padding: 0 15px;
+  color: var(--accent-color);
+  font-weight: 500;
+
+  &::placeholder{
+      color: var(--accent-color);
+      font-weight: bold;
+  }
+
+  &:focus {
+      border: 2px solid var(--secondary-color); 
+      outline: none; 
+  }
+
+}
+
+
+.error-placeholder{
+  height:20px;
+
+  .error-message{
+      color: var(--accent-color);
+      font-size: 14px;
+  }
 }
 
 .image-holder {
