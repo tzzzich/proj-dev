@@ -1,10 +1,11 @@
-import RegisterPage from "./pages/welcome/Register";
+import Project from "./pages/project/Project";
+
 
 const App = () => {
 
   return (
     <>
-      <RegisterPage />
+      <Project/>
     </>
   )
 };
