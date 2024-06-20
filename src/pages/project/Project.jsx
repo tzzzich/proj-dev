@@ -6,7 +6,7 @@ import { useState } from "react";
 import JoinForm from "./JoinForm";
 import CreateForm from "./CreateForm";
 
-export default function Project () {
+export default function ProjectPage () {
 
     const[showJoinModal, setShowJoinModal] = useState(false);
 
