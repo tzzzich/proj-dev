@@ -5,9 +5,9 @@ export default function SponsorInfo () {
         <div className="sponsor-info-wrapper">
             <div className="sponsor-info">
                 <div className='image-holder sponsor-image'>
-                    <img src='https://placehold.co/600x400' alt="Sponsor Banner" className="sponsor-banner" />
+                    <img src='./lang.jpeg' alt="Sponsor Banner" className="sponsor-banner" />
                 </div>
-                <h2>SUBSCRIBE TO CaXaP</h2>
+                <a href="https://vk.com/ttydrus" ><h2>Check out our sposor!</h2></a>
                 <div className="credits-wrapper">
                     <div className='credits'>
                         <p>Credits:</p>
