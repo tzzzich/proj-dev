@@ -27,7 +27,7 @@
     max-height: 78%;
     overflow: auto;
 
-    scrollbar-color: var(--text-color) var(--secondary-color);
+    scrollbar-color: var(--accent-color) var(--secondary-color);
 
     .project-list-item {
         color: white;
@@ -75,4 +75,32 @@
         }
     }
 
+}
+
+.form {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    .input-wrapper {
+        width: 100%;
+        input {
+            width: 100%;
+        }
+        
+    }
+}
+form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    button{
+        margin-top: 10px;
+    }
 }

@@ -1,10 +1,7 @@
 .content-wrapper{
     height: 100%;
 
-    display: grid;
-    gap: 50px;
-
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     justify-content: center;
 }
 
@@ -12,10 +9,11 @@
     display: flex;
     align-items: center;
     min-height: 100%;
+    margin-left: 50px;
 }
 .form-wrapper{
-
     height: 530px;
+    min-width: 300px;
     width: 430px;
 
     background-color: var(--base-color);

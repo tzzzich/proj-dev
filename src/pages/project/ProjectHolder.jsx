@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getProjects } from "../../utils/api";
 import ProjectListItem from "./ProectListItem";
 
+
+
 export default function ProjectHolder () {
 
     const [projects, setProjects] = useState([]);

@@ -5,6 +5,7 @@
     min-height: 100%;
 }
 .sponsor-info {
+    min-width: 300px;
     width: 520px;
     height: 605px;
 
