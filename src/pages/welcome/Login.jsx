@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import SponsorInfo from '../../components/sponsor-info/SponsorInfo';
-import EmailInput from '../../components/ui/EmailInput';
-import PasswordInput from '../../components/ui/PasswordInput';
+import EmailInput from '../../components/ui/input/EmailInput';
+import PasswordInput from '../../components/ui/input/PasswordInput';
 
 import './welcome-page.css'
 

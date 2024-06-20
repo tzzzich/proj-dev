@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import InputField from '../../components/ui/InputField';
+import InputField from '../../components/ui/input/InputField';
 
 export default function JoinForm ({closeModal}) {
 
