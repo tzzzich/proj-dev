@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import './file-input.css'
+import UploadIcon from './../../../../assets/icons/upload.svg?react'
 
 export default function FileInput ({ name, placeholder, validation }) {
     const { register, formState: { errors } } = useFormContext();
@@ -8,6 +9,7 @@ export default function FileInput ({ name, placeholder, validation }) {
       <div className="file-input-wrapper">
           <label htmlFor={name} className="file-label">
             {placeholder}
+            <UploadIcon/>
           </label>
           <input
             id={name}

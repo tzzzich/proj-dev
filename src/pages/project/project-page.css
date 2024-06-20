@@ -44,10 +44,37 @@
         cursor: pointer;
         transition: all 0.5s ease-in-out;
 
+        .icon-holder{
+            position: relative;
+            width: 48px;
+            height: 48px;
+            .project, .project-active{
+                position: absolute;
+            }
+            .project{
+                opacity:1;
+                transition: all 0.5s ease-in-out;
+            }
+            .project-active{
+                opacity:0;
+                transition: all 0.5s ease-in-out;
+            }
+        }
+
         &:hover {
             background-color: white;
             color: var(--accent-color);
-            transition: all 0.5s ease-in-out;
+
+            .icon-holder{
+                .project{
+                    opacity:0;
+                    transition: all 0.5s ease-in-out;
+                }
+                .project-active{
+                    opacity:1;
+                    transition: all 0.5s ease-in-out;
+                }
+            }
         }
 
 
