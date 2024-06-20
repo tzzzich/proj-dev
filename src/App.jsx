@@ -1,10 +1,13 @@
-import RegisterPage from "./pages/welcome/Register";
+import Project from "./pages/project/Project";
+import LoginPage from "./pages/welcome/Login";
+
 
 const App = () => {
 
   return (
     <>
-      <RegisterPage />
+
+      <Project/>
     </>
   )
 };

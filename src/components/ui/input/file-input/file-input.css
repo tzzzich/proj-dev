@@ -1,0 +1,24 @@
+.file-input-wrapper {
+
+    width: 100%;
+  }
+  
+  .file-label {
+    display:block;
+    cursor:pointer;
+    border: 2px solid transparent;
+    padding: 10px 15px;
+    background-color: white;
+    color: var(--accent-color);
+    font-weight: bold;
+    border-radius: 16px;
+    height:44px;
+    width:100%;
+
+    font-size: 16px;
+  }
+  
+  .file-input {
+    cursor:pointer;
+    display: none;
+  }
