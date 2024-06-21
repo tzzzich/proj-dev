@@ -7,23 +7,42 @@ const api = axios.create();
 export const mockedApi = new AxiosMockAdapter(api, { delayResponse: 200 });
 export default api;
 
-mockedApi.onGet('/users').reply(200, [
-    {
-      id: 1,
-      username: 'JohnDoe',
-      email: 'VUjZB@example.com',
-    },
-    {
-      id: 2,
-      username: 'JaneAir',
-      email: 'aXpDg@example.com',
-    },
-    {
-      id: 3,
-      username: 'JohnSmith',
-      email: 'VUjZBe@example.com',
-    },
-]);
+mockedApi.onGet('/users').reply(config => {
+    return [200, [
+        {
+          id: 1,
+          username: 'JohnDoe',
+          email: 'VUjZB@example.com',
+        },
+        {
+          id: 2,
+          username: 'JaneAir',
+          email: 'aXpDg@example.com',
+        },
+        {
+          id: 3,
+          username: 'JohnSmith',
+          email: 'VUjZBe@example.com',
+        },
+    ] ];
+});
+
+mockedApi.onGet('/tables').reply(config => {
+    return [200, [
+        {
+          id: 1,
+          name: 'JohnDoe',
+        },
+        {
+          id: 2,
+          name: 'JaneAir',
+        },
+        {
+          id: 3,
+          name: 'JohnSmith',
+        },
+    ] ];
+});
   
 
 mockedApi.onGet('/projects').reply(200, [
@@ -56,3 +75,5 @@ mockedApi.onGet('/projects').reply(200, [
     },
 
   ]);
+
+

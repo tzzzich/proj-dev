@@ -3,5 +3,6 @@ export const ROUTES = {
     LOGIN: '/login',
     REGISTRATION: '/register',
     PROJECTS: '/projects',
+    ROOM: '/projects/:projectId'
   };
   

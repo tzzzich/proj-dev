@@ -1,13 +1,16 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import FileInput from '../../components/ui/input/file-input/FileInput';
 import InputField from '../../components/ui/input/InputField';
 
 export default function CreateForm ({closeModal}) {
 
     const methods = useForm();
+    const navigate = useNavigate();
 
     const onSubmit = (data) => {
       console.log(data);
+      navigate('100');
       closeModal();
     };
 
@@ -17,19 +20,16 @@ export default function CreateForm ({closeModal}) {
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <InputField
-                    name={"roomId"}
+                    name={"name"}
                     type="text"
-                    placeholder={"Invitation code"}
+                    placeholder={"Project name"}
                     validation={{
-                    required: `Invitation code is required`
+                    required: `Project name is required`
                         }}
                 />
                 <FileInput
                     name={"file"}
                     placeholder={"Archive with MSBTs"}
-                    validation={{
-                    required: 'Archive with MSBTs is required'
-                    }}
                 />
                 <button type="submit">Create</button>
                 </form>
