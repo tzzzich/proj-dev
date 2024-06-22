@@ -6,7 +6,7 @@ export default function ProjectListItem ({project}) {
     const navigate = useNavigate();
 
     return(
-        <div className="project-list-item" onClick={() => navigate(`${project.id}`)}>
+        <div className="project-list-item" onClick={() => navigate(`${project._id}`)}>
             <div className="icon-holder">
                 <ProjectIcon className="project"/>
                 <ProjectIconActive className="project-active"/>

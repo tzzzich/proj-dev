@@ -8,6 +8,8 @@ import LoginPage from "./pages/welcome/Login";
 import RegisterPage from "./pages/welcome/Register";
 import { ROUTES } from "./utils/constants/router";
 
+import { Provider } from 'react-redux'
+import store from './utils/redux/store'
 
 const App = () => {
 
@@ -52,7 +54,9 @@ const App = () => {
 
   return(
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />  
+      </Provider>
     </QueryClientProvider>
   )
 };

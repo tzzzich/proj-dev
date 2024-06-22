@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getTables, getUsers } from "../../utils/api";
+import { getTables, getUsers } from "../../utils/mock-api";
 
 import TranslateIcon from './../../assets/icons/translate.svg?react';
 
