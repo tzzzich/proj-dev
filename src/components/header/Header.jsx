@@ -14,7 +14,6 @@ export default function Header () {
         async function getUserProfile(){
             try {
                 const response = await getProfile();
-                console.log(response.data)
                 setEmail(response.data.email);
                 dispatch(changeEmail( response.data.email));
                 dispatch(changeId(response.data._id));

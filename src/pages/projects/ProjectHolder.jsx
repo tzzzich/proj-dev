@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { getRooms } from "../../utils/api/requests";
-import { getProjects } from "../../utils/mock-api";
 import ProjectListItem from "./ProectListItem";
-
 
 
 export default function ProjectHolder () {
@@ -15,7 +13,7 @@ export default function ProjectHolder () {
           try {
             setLoading(true);
             const response = await getRooms();
-            setProjects(response.data.tables);
+            setProjects(response.rooms);
             setLoading(false);
           } catch (error) {
             console.error('Error fetching data:', error);

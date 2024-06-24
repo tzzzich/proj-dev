@@ -27,7 +27,6 @@ export async function getProfile () {
     try {
       const response = await api.get('/users/profile');
       localStorage.setItem("email", response.data.email)
-      console.log(response);
       return response;
     } catch (error) {
       console.log(error);

@@ -1,9 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/ui/input/InputField';
-import { joinRoom } from '../../utils/api/requests';
+import { joinRoom, renameRoom } from '../../utils/api/requests';
 
-export default function JoinForm ({closeModal}) {
+export default function ChangeRoomNameForm ({closeModal, updateName, currentName}) {
     const navigate = useNavigate();
 
     const methods = useForm();
@@ -11,8 +11,8 @@ export default function JoinForm ({closeModal}) {
     const onSubmit = async(data) => {
       console.log(data);
       try {
-        const response = await joinRoom(data);
-        navigate(`/projects/${response.roomId}/table/${response.tableId}`)
+        const response = await renameRoom( localStorage.getItem('roomId'), data);
+        updateName(data);
         closeModal();
       }
       catch(error) {
@@ -23,18 +23,19 @@ export default function JoinForm ({closeModal}) {
 
     return (
         <div className="form">
-            <h2>Join project</h2>
+            <h2>Change Room name</h2>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <InputField
-                    name={"invitation_code"}
+                    name={"name"}
                     type="text"
-                    placeholder={"Invitation code"}
+                    placeholder={"Room name"}
                     validation={{
-                    required: `Invitation code is required`
+                    required: `Room name is required`
                         }}
+                    defaultValue={currentName}
                 />
-                <button type="submit">Join</button>
+                <button type="submit">Submit</button>
                 </form>
             </FormProvider>
         </div>

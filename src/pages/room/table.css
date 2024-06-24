@@ -1,0 +1,23 @@
+.cell-with-custom-border {
+    background-color: rgba(0, 0, 0, 0.2)!important;
+}
+
+.table-holder {
+    height: inherit; 
+    width: calc(100% - 120px);
+    padding: 20px;
+
+    .table-picker {
+        display: flex;
+        
+        .table-option {
+            background-color: var(--base-color);
+            color: var(--accent-color);
+            padding: 0.5em;
+    
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+    
+}
