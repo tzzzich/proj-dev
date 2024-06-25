@@ -4,6 +4,8 @@ import UserIcon from './../../assets/icons/users.svg?react';
 import DeleteIcon from './../../assets/icons/delete.svg?react';
 import { deleteUser } from '../../utils/api/requests';
 
+import swal from 'sweetalert';
+
 const DropdownMenu = ({ items }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [curItems, setCurItems] = useState(items);
@@ -18,7 +20,7 @@ const DropdownMenu = ({ items }) => {
             const newItems = curItems.filter(item => item._id !== id);
             setCurItems(newItems);
         } catch (error) {
-            console.log(error);
+            swal("Error!", error, "error");
         }
     };
 
@@ -31,7 +33,7 @@ const DropdownMenu = ({ items }) => {
             </button>
             {isOpen && (
                 <div className="dropdown-content">
-                    {curItems.map(item => (
+                    { curItems? curItems.map(item => (
                         <div className="dropdown-item" key={item._id}>
                             {item.username}
                             <DeleteIcon
@@ -39,7 +41,7 @@ const DropdownMenu = ({ items }) => {
                                 onClick={() => removeUser(item._id)}
                             />
                         </div>
-                    ))}
+                    )) : null}
                 </div>
             )}
         </div>
