@@ -13,7 +13,6 @@ export default function AddUserForm ({closeModal, updateUsers}) {
       console.log(data);
       try {
         const response = await addUser( localStorage.getItem('roomId'), data);
-        console.log(response);
         updateUsers(response);
         closeModal();
       }

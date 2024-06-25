@@ -68,6 +68,20 @@ export const addUser = async (roomId, data) => {
   }
 };
 
+export const deleteUser = async (roomId, id) => {
+  try {
+    const response = await api.delete(`/rooms/deleteUserRoom?roomId=${roomId}&user_id=${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
+  }
+};
+
 export const createRoom = async (data) => {
   try {
     const response = await api.post(`/rooms/addRoom`, data);

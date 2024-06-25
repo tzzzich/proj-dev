@@ -61,8 +61,9 @@ export default function RoomPage () {
         setRoom({...room, name: data.name})
       }
 
-      function updateUsers(data) {
-        setUsers({...users, data})
+      async function updateUsers() {
+        const newUsers = await getUsers(roomId);
+        setUsers(newUsers.users);
       }
 
     return(
