@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/ui/input/InputField';
 import { joinRoom, renameRoom } from '../../utils/api/requests';
 
 export default function ChangeRoomNameForm ({closeModal, updateName, currentName}) {
+    const [error, setErrors] = useState(null)
     const navigate = useNavigate();
 
     const methods = useForm();
@@ -16,8 +18,7 @@ export default function ChangeRoomNameForm ({closeModal, updateName, currentName
         closeModal();
       }
       catch(error) {
-
-        console.log(error)
+        setErrors(error);
       }
     };
 
@@ -26,6 +27,7 @@ export default function ChangeRoomNameForm ({closeModal, updateName, currentName
             <h2>Change Room name</h2>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <p className='error-message'>{error? error : ''}</p>
                 <InputField
                     name={"name"}
                     type="text"

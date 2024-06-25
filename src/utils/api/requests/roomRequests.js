@@ -6,7 +6,7 @@ export const getRooms = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    throw error.response.data.message;
   }
 };
 
@@ -16,7 +16,7 @@ export const getUsers = async (roomId) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    throw error.response.data.message;
   }
 };
 
@@ -26,7 +26,7 @@ export const getRoom = async (roomId) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    throw error.response.data.message;
   }
 };
 
@@ -36,7 +36,7 @@ export const getTables = async (roomId) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    throw error.response.data.message;
   }
 };
 
@@ -46,7 +46,11 @@ export const renameRoom = async (roomId, data) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
   }
 };
 
@@ -57,6 +61,6 @@ export const joinRoom = async (data) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error.message;
+    throw error.response.data.message;
   }
 };

@@ -64,7 +64,7 @@ button {
 }
 
 .room {
-    width: --webkit-fill-available;
+    width: -webkit-fill-available;
     display: flex;
     flex-direction: column;
 }

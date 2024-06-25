@@ -97,7 +97,7 @@ const TableHolder = ({room, users, allTables}) => {
         })
 
         socket.emit("get-document", tableId, roomId)
-    }, [socket, table, tableId, dataTable, users, userId])
+    }, [socket, table, tableId, roomId, dataTable, users, userId])
 
     useEffect(() => {
         if (socket == null || table == null) return
@@ -317,20 +317,34 @@ const TableHolder = ({room, users, allTables}) => {
 
         setTable(t)
     }, [])
+
+    const handleTableChange = (event) => {
+        const tableId = event.target.value;
+        if (tableId) {
+            navigate(`/projects/${roomId}/table/${tableId}`);
+        }
+    }
     return (
         <div className="table-holder">
             <h3>Table name: {tableName}</h3>
-            <div className="container" ref={wrapperRef}/>
-            <button onClick={addColumn}>Add Column</button>
-            <input type={'text'} id={'999999999'}/><br/>
-            <div className="table-picker">
-                {allTables != null ? allTables.map((item) => (
-                    <button className="table-option" id={item.id}
-                        onClick={() => navigate(`/projects/${roomId}/table/${item.id}`)} >
-                            {item.name}
-                    </button>
-                        )) : ""}
+            <div className="add-lang">
+                <button onClick={addColumn}>Add Column</button>
+                <input type={'text'} id={'999999999'}/>
             </div>
+            <div className="table-picker">
+                <select 
+                    className="table-dropdown" 
+                    onChange={handleTableChange}
+                >
+                    <option value="" disabled>Select a table</option>
+                    {allTables && allTables.map((item) => (
+                        <option key={item.id} value={item.id}>
+                            {item.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div className="container" ref={wrapperRef}/>
         </div>
     )
 }
