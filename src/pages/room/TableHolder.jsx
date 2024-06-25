@@ -6,6 +6,8 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
 import axios from "axios";
 
+import EditIcon from './../../assets/icons/edit.svg?react'
+
 import './table.css'
 
 const SAVE_INTERVAL_MS = 2000
@@ -326,7 +328,7 @@ const TableHolder = ({room, users, allTables}) => {
     }
     return (
         <div className="table-holder">
-            <h3>Table name: {tableName}</h3>
+            <h3>Table name: {tableName} <EditIcon className="edit-icon"/></h3>
             <div className="add-lang">
                 <button onClick={addColumn}>Add Column</button>
                 <input type={'text'} id={'999999999'}/>

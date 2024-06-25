@@ -2,28 +2,34 @@ button {
     &.header-btn {
         height: 100%;
         width: max-content;
+        display:flex;
+        align-items: center;
         border-radius: 0;
         padding: 12px 20px;
         width:auto;
+        font-size: 16px;
 
         color: var(--base-color);
+
+        svg{
+            margin-right: 10px;
+            min-width: 25px;
+            min-height: 25px;
+            max-width: 25px;
+            max-height: 25px;
+        }
 
         &.translate {
             display: flex;
             justify-content: space-evenly;
             align-items: center;
             text-align:left;
-            max-width: 160px;
+            max-width: 130px;
+            padding: 10px;
 
-            span{
-                margin-left: 10px;
-            }
 
             svg{
-                min-width: 40px;
-                min-height: 40px;
-                max-width: 40px;
-                max-height: 40px;
+                margin-right: 5px;
             }
         }
 
@@ -31,13 +37,12 @@ button {
             display: flex;
             justify-content: center;
             align-items: center;
-            max-width: 140px;
+            max-width: 120px;
+            background-color: transparent;
 
             svg{
-                min-width: 30px;
-                min-height: 30px;
-                max-width: 30px;
-                max-height: 30px;
+                margin-left: 5px;
+                margin-right: 0;
             }
         }
 
@@ -48,6 +53,11 @@ button {
                     fill: var(--accent-color);
                     transition: all 0.5s ease-in-out;
                 }
+            }
+
+            &.change{
+                background-color: var(--secondary-color);
+                color: var(--text-color);
             }
             
         }
@@ -85,7 +95,7 @@ button {
             width:120px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;
+            justify-content: center;
         }
     }
 
@@ -98,3 +108,6 @@ button {
     }
 }
 
+.icon{
+    margin-right: 5px;
+}

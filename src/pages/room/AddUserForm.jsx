@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/ui/input/InputField';
-import { renameRoom } from '../../utils/api/requests';
+import { addUser} from '../../utils/api/requests';
 
-export default function ChangeRoomNameForm ({closeModal, updateName, currentName}) {
+export default function AddUserForm ({closeModal, updateUsers}) {
     const [error, setErrors] = useState(null)
 
     const methods = useForm();
@@ -12,8 +12,9 @@ export default function ChangeRoomNameForm ({closeModal, updateName, currentName
     const onSubmit = async(data) => {
       console.log(data);
       try {
-        const response = await renameRoom( localStorage.getItem('roomId'), data);
-        updateName(data);
+        const response = await addUser( localStorage.getItem('roomId'), data);
+        console.log(response);
+        updateUsers(response);
         closeModal();
       }
       catch(error) {
@@ -23,18 +24,17 @@ export default function ChangeRoomNameForm ({closeModal, updateName, currentName
 
     return (
         <div className="form">
-            <h2>Change Room name</h2>
+            <h2>Add user</h2>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <p className='error-message'>{error? error : ''}</p>
                 <InputField
-                    name={"name"}
+                    name={"email"}
                     type="text"
-                    placeholder={"Room name"}
+                    placeholder={"User email"}
                     validation={{
-                    required: `Room name is required`
+                    required: `User email is required`
                         }}
-                    defaultValue={currentName}
                 />
                 <button type="submit">Submit</button>
                 </form>

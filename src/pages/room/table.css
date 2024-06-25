@@ -42,6 +42,10 @@
     
 }
 
+.edit-icon{
+    cursor:pointer;
+}
+
 .add-lang{
     display:flex;
     height: 55px;

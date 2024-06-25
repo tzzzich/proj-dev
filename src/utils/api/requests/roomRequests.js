@@ -54,13 +54,43 @@ export const renameRoom = async (roomId, data) => {
   }
 };
 
+export const addUser = async (roomId, data) => {
+  try {
+    const response = await api.post(`/rooms/addUser?roomId=${roomId}`, data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
+  }
+};
+
+export const createRoom = async (data) => {
+  try {
+    const response = await api.post(`/rooms/addRoom`, data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
+  }
+};
 
 export const joinRoom = async (data) => {
   try {
     const response = await api.post(`/rooms/inviteUser`, data);
     return response.data;
   } catch (error) {
-    console.log(error);
-    throw error.response.data.message;
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
   }
 };

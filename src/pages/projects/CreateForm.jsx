@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import FileInput from '../../components/ui/input/file-input/FileInput';
 import InputField from '../../components/ui/input/InputField';
+import { createRoom } from '../../utils/api/requests';
 
 export default function CreateForm ({closeModal}) {
     const [error, setErrors] = useState(null)
@@ -10,9 +11,18 @@ export default function CreateForm ({closeModal}) {
     const methods = useForm();
     const navigate = useNavigate();
 
-    const onSubmit = (data) => {
-      console.log(data);
-      navigate('100');
+    const onSubmit = async (data) => {
+        console.log(data);
+        try {
+          const response = await createRoom(data);
+          console.log(response);
+          navigate(`/projects/${response.roomId}/table/${response.tableId}`)
+          closeModal();
+        }
+        catch(error) {
+  
+          setErrors(error);
+        }
       closeModal();
     };
 
@@ -31,7 +41,7 @@ export default function CreateForm ({closeModal}) {
                         }}
                 />
                 <FileInput
-                    name={"file"}
+                    name={"zipWithMsbts"}
                     placeholder={"Archive with MSBTs"}
                 />
                 <button type="submit">Create</button>
