@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import InputField from "./InputField";
 
-export default function PasswordInput () {
+export default function PasswordInput ({defaultVal}) {
     const { register, formState: { errors } } = useFormContext();
     return (
         <InputField
@@ -13,7 +13,8 @@ export default function PasswordInput () {
             minLength: {
                 value: 6,
                 message: 'Password must be at least 6 characters long'
-            }
+            },
+            defaultValue:{defaultVal},
             }}
         />
     );
