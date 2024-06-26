@@ -56,6 +56,22 @@ export const renameRoom = async (roomId, data) => {
   }
 };
 
+export const changeTableName = async (tableId, data) => {
+  try {
+    const response = await api.put(`/tables/renameTable?tableId=${tableId}`, data);
+    return response;
+  } catch (error) {
+    console.log(error);
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    else if (error.response.data.error) {
+      throw error.response.data.error;
+    } else throw error.message;
+  }
+};
+
 export const addUser = async (roomId, data) => {
   try {
     const response = await api.post(`/rooms/addUser?roomId=${roomId}`, data);

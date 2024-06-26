@@ -29,7 +29,7 @@ const findCell = (col, row) => {
     return filteredElements[0]
 }
 
-const TableHolder = ({room, users, allTables, myRow, socket, table, setTable}) => {
+const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, changeName}) => {
     const { roomId, tableId } = useParams()
     const [tableName, setTableName] = useState(null)
     const [updateTables, setUpdateTables] = useState(false)
@@ -41,22 +41,6 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable}) =
     const token = localStorage.getItem('token');
     const userId = useSelector((state) => state.user.id);
     const navigate = useNavigate();
-
-
-    // useEffect(() => {
-    //     const s = io("http://158.160.147.53:6969", {
-    //         extraHeaders: {
-    //             "x-auth-token": token,
-    //             "Authorization": token
-    //         }
-    //     })
-    //     setSocket(s)
-    //     localStorage.setItem('roomId', roomId)
-
-    //     return () => {
-    //         s.disconnect()
-    //     }
-    // }, [])
 
     useEffect(() => {
         if (socket == null || table == null || users == null || userId == null) return
@@ -80,17 +64,6 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable}) =
         socket.emit("get-document", tableId, roomId)
     }, [socket, table, tableId, users, userId])
 
-    // useEffect(() => {
-    //     if (socket == null || table == null) return
-
-    //     const interval = setInterval(() => {
-    //         socket.emit("save-document", table.getSourceData(), myColumns)
-    //     }, SAVE_INTERVAL_MS)
-
-    //     return () => {
-    //         clearInterval(interval)
-    //     }
-    // }, [socket, table])
 
     useEffect(() => {
         if (socket == null || table == null) return
@@ -248,18 +221,21 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable}) =
     }
     return (
         <div className="table-holder">
-            <h3>Table name: {tableName} <EditIcon className="edit-icon"/></h3>
-            <div className="table-picker">
-                <select 
-                    className="table-dropdown" 
-                    onChange={handleTableChange}
-                >
-                    {allTables && allTables.map((item) => (
-                        <option key={item.id} value={item.id} selected={item.id == tableId}>
-                            {item.name}
-                        </option>
-                    ))}
-                </select>
+            <div className="table-info">
+                <h2>Table name: {tableName} <EditIcon className="edit-icon" onClick={changeName}/></h2>
+                <div className="table-picker">
+                    <h3>Select table</h3>
+                    <select 
+                        className="table-dropdown" 
+                        onChange={handleTableChange}
+                    >
+                        {allTables && allTables.map((item) => (
+                            <option className='option' key={item.id} value={item.id} selected={item.id == tableId}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
             <div className="container" ref={wrapperRef}/>
         </div>

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/ui/input/InputField';
 import { renameRoom } from '../../utils/api/requests';
 
-export default function ChangeRoomNameForm ({closeModal, updateName, currentName}) {
+export default function ChangeRoomNameForm ({closeModal, updateName, currentName, socket}) {
     const [error, setErrors] = useState(null)
 
     const methods = useForm();
@@ -14,6 +14,7 @@ export default function ChangeRoomNameForm ({closeModal, updateName, currentName
       try {
         const response = await renameRoom( localStorage.getItem('roomId'), data);
         updateName(data);
+        socket.emit("send-room-name", data.name);
         closeModal();
       }
       catch(error) {

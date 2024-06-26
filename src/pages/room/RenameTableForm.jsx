@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import InputField from '../../components/ui/input/InputField';
-import { addUser} from '../../utils/api/requests';
 
-export default function AddUserForm ({closeModal, updateUsers, socket}) {
+export default function RenameTableForm ({closeModal, renameTable, currentName}) {
     const [error, setErrors] = useState(null)
 
     const methods = useForm();
@@ -12,9 +11,7 @@ export default function AddUserForm ({closeModal, updateUsers, socket}) {
     const onSubmit = async(data) => {
       console.log(data);
       try {
-        const response = await addUser( localStorage.getItem('roomId'), data);
-        updateUsers();
-        socket.emit("send-users");
+        renameTable(data);
         closeModal();
       }
       catch(error) {
@@ -24,17 +21,18 @@ export default function AddUserForm ({closeModal, updateUsers, socket}) {
 
     return (
         <div className="form">
-            <h2>Add user</h2>
+            <h2>Change Table name</h2>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <p className='error-message'>{error? error : ''}</p>
                 <InputField
-                    name={"email"}
+                    name={"name"}
                     type="text"
-                    placeholder={"User email"}
+                    placeholder={"Table name"}
                     validation={{
-                    required: `User email is required`
+                    required: `Table name is required`
                         }}
+                    defaultValue={currentName}
                 />
                 <button type="submit">Submit</button>
                 </form>

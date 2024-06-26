@@ -1,4 +1,4 @@
-import { getRoom, getTables, getUsers } from "../../utils/api/requests";
+import { changeTableName, getRoom, getTables, getUsers } from "../../utils/api/requests";
 import {  useSelector } from 'react-redux';
 
 import {useCallback, useEffect, useState} from "react"
@@ -19,6 +19,8 @@ import Modal from "../../components/ui/modal/Modal";
 import ChangeRoomNameForm from "./ChangeRoomNameForm";
 import DropdownMenu from "../../components/dropdown-menu/DropdownMenu";
 import AddUserForm from "./AddUserForm";
+import RenameTableForm from "./RenameTableForm";
+import LanguagePickForm from "./LanguagePickForm";
 
 let editUser = true
 let myColumns = [
@@ -83,7 +85,7 @@ export default function RoomPage () {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        //setLoading(true);
         const [usersResponse, roomResponse, tablesResponse ] = await Promise.all(
           [getUsers(roomId), getRoom(roomId), getTables(roomId)]
         );
@@ -92,7 +94,8 @@ export default function RoomPage () {
         setRoom(roomResponse);
         setAllTables(tablesResponse.tables);
         setIsAdmin(userId === roomResponse.creator);
-        setLoading(false);
+        localStorage.setItem('roomId', roomResponse.id)
+        //setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -101,31 +104,27 @@ export default function RoomPage () {
     fetchData();
   }, [updateTables, updateUsers]);//РАЗДЕЛИТЬ 
 
-  // useEffect(() => {
-  //     async function fetchData() {
-  //         const tablesResponse = await axios.get(`http://158.160.147.53:6868/rooms/getTables?roomId=${roomId}`, {
-  //             headers: {
-  //                 "Authorization": "Bearer " + localStorage.getItem("token")
-  //             }
-  //         });
-  //         setAllTables(tablesResponse.data.tables);
-  //     }
+  useEffect(() => {
+    if (socket == null || table == null || users == null || userId == null) return
 
-  //     fetchData();
-  // }, [updateTables])
+    socket.once("load-document", (tableExist, data, columns, name) => {
+        if (!tableExist) return
 
-  // useEffect(() => {
-  //     const getRoomUsers = async () => {
-  //         const roomResponse = await axios.get(`http://158.160.147.53:6868/rooms/getUsers?roomId=${roomId}`, {
-  //             headers: {
-  //                 "Authorization": "Bearer " + localStorage.getItem("token")
-  //             }
-  //         })
-  //         setUsers(roomResponse.data.users)
-  //     }
+        myRow = data
+        table.loadData(data)
+        myColumns = columns
 
-  //     getRoomUsers();
-  // }, [updateUsers])
+        setTableName(name)
+
+        table.updateSettings({
+            columns: myColumns
+        })
+
+        setRowAndCol(users.map((item) => ({id: item._id, row: null, col: null})))
+    })
+
+    socket.emit("get-document", tableId, roomId)
+}, [socket, table, tableId, users, userId])
 
   useEffect(() => {
       if (socket == null || table == null) return
@@ -163,30 +162,30 @@ export default function RoomPage () {
 
 
   const [showRenameRoomModal, setShowRenameRoomModal] = useState(false);
+  const [showRenameTableModal, setShowRenameTableModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showLangModal, setShowLangModal] = useState(false);
 
   function toggleRenameRoomModal() {
     setShowRenameRoomModal(!showRenameRoomModal);
+  }
+  function toggleLangModal() {
+    setShowLangModal(!showLangModal);
+  }
+  function toggleRenameTableModal() {
+    setShowRenameTableModal(!showRenameTableModal);
   }
 
   function toggleAddUserModal() {
     setShowAddUserModal(!showAddUserModal);
   }
 
-  // const addColumnWithTranslate = async () => {
-
-  //     myRow = table.getSourceData()
-  //     myRow = myRow.map((item) => {
-  //         const arr = objectToArray(item, myColumns.length)
-  //         arr.splice(arr.length - 1, 0, "")
-  //         return Object.fromEntries(arr.map((value, index) => [index, value]))
-  //     })
-  //     var i;
-  //     var textForTranslate = []
-  //     for (i = 0; i < myRow.length; i++) {
-  //         textForTranslate.push(myRow[i][4])
-
-  //     }
+  const addColumnWithTranslate = async (language) => {
+    const translationCol = table.getActiveEditor().col
+    const title = table.getSourceData()[0][translationCol] + "_Translation"
+    myColumns.push({});
+    socket.emit("send-cols", myColumns, title, translationCol, language)
+  }
 
   //     const roomResponse = await axios.post(`http://158.160.147.53:6868/translate/translate`, {sourceLanguageCode: "de", folderId: "b1gbi9p05hufm79d5rlo", texts: textForTranslate, targetLanguageCode: document.getElementById("selectlanguage").options[ document.getElementById("selectlanguage").selectedIndex ].value}, {
   //         headers: {
@@ -327,19 +326,23 @@ export default function RoomPage () {
       }
   }, [socket, table, room])
 
-  const renameTable = async () => {
-      const name = document.getElementById('1').value
-      await axios.put(`http://158.160.147.53:6868/tables/renameTable?tableId=${tableId}`, {name: name}, {
-          headers: {
-              "Authorization": "Bearer " + localStorage.getItem("token")
-          }
-      })
-          .then(() => {
-              setTableName(name)
-              setUpdateTables(prev => !prev)
-              socket.emit("send-table-name", name)
-              socket.emit("send-tables")
-          })
+  const renameTable = async (data) => {
+    try {
+      await axios.put(`http://158.160.147.53:6868/tables/renameTable?tableId=${tableId}`, data, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then(() => {
+                setTableName(data.name)
+                setUpdateTables(prev => !prev)
+                socket.emit("send-table-name", data.name)
+                socket.emit("send-tables")
+            })
+    } catch(error) {
+      throw error;
+    }
+  
   }
 
   useEffect(() => {
@@ -412,9 +415,15 @@ export default function RoomPage () {
       setRoom({...room, name: data.name})
     }
 
+    function updateTableName(data) {
+      setTableName(data.name)
+      setUpdateTables(prev => !prev)
+      socket.emit("send-table-name", data.name)
+      socket.emit("send-tables")
+    }
+
     async function updateChildUsers() {
-      const newUsers = await getUsers(roomId);
-      setUsers(newUsers.users);
+      setUpdateUsers(true);
     }
 
 
@@ -441,17 +450,23 @@ export default function RoomPage () {
                       <button className="header-btn">+ Add Table</button>
                   </div>
                   <div className="part">
-                      <DropdownMenu items={users}/>
+                      <DropdownMenu items={users} socket={socket}/>
                       <button className="header-btn translate"><DownloadIcon/> Download as MSBTs</button>
-                      <button className="header-btn translate"><TranslateIcon /> Auto Translate</button>
+                      <button className="header-btn translate" onClick={toggleLangModal}><TranslateIcon /> Auto Translate</button>
                   </div>
               </header>   
-              <TableHolder room={room} allTables={allTables} users={users} myRow={myRow} socket={socket} table={table} setTable={setTable}/>
-              <Modal show={showRenameRoomModal} onClose={toggleRenameRoomModal}>
-                  <ChangeRoomNameForm closeModal={toggleRenameRoomModal} updateName={updateName} currentName={room?.name}/>
+              <TableHolder room={room} allTables={allTables} users={users} myRow={myRow} socket={socket} table={table} setTable={setTable} changeName={toggleRenameTableModal}/>
+              <Modal show={showRenameRoomModal} onClose={toggleRenameRoomModal} >
+                  <ChangeRoomNameForm closeModal={toggleRenameRoomModal} updateName={updateName} currentName={room?.name} socket={socket}/>
               </Modal>
-              <Modal show={showAddUserModal} onClose={toggleAddUserModal}>
-                  <AddUserForm closeModal={toggleAddUserModal} updateUsers={updateChildUsers}/>
+              <Modal show={showAddUserModal} onClose={toggleAddUserModal} >
+                  <AddUserForm closeModal={toggleAddUserModal} updateUsers={updateChildUsers} socket={socket}/>
+              </Modal>
+              <Modal show={showRenameTableModal} onClose={toggleRenameTableModal} >
+                  <RenameTableForm closeModal={toggleRenameTableModal} renameTable={renameTable} currentName={tableName} socket={socket}/>
+              </Modal>
+              <Modal show={showLangModal} onClose={toggleLangModal} >
+                  <LanguagePickForm closeModal={toggleLangModal} changeLanguage={addColumnWithTranslate} socket={socket}/>
               </Modal>
 
           </div>

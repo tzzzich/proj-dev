@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './dropdown-menu.css'; 
 import UserIcon from './../../assets/icons/users.svg?react';
 import DeleteIcon from './../../assets/icons/delete.svg?react';
@@ -6,19 +6,24 @@ import { deleteUser } from '../../utils/api/requests';
 
 import swal from 'sweetalert';
 
-const DropdownMenu = ({ items }) => {
+const DropdownMenu = ({ items, socket}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [curItems, setCurItems] = useState(items);
 
     const toggleDropdown = () => {
+        console.log(items, curItems);
         setIsOpen(!isOpen);
     };
+
+    useEffect(() => {
+        setCurItems(items);
+    }, [items]);
 
     const removeUser = async (id) => {
         try {
             const response = await deleteUser(localStorage.getItem('roomId'), id );
-            const newItems = curItems.filter(item => item._id !== id);
-            setCurItems(newItems);
+            socket.emit("send-users")
+            setCurItems( curItems.filter(item => item._id !== id));
         } catch (error) {
             swal("Error!", error, "error");
         }

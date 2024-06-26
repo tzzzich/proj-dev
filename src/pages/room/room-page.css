@@ -6,6 +6,7 @@ button {
         align-items: center;
         border-radius: 0;
         padding: 12px 20px;
+        cursor:pointer;
         width:auto;
         font-size: 16px;
 
