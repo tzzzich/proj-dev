@@ -6,6 +6,7 @@ export const getRooms = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
+    localStorage.setItem('token', null);
     throw error.response.data.message;
   }
 };
@@ -26,6 +27,7 @@ export const getRoom = async (roomId) => {
     return response.data;
   } catch (error) {
     console.log(error);
+    ocalStorage.setItem('token', null);
     throw error.response.data.message;
   }
 };

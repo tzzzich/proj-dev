@@ -2,11 +2,19 @@ import ProjectHolder from "./ProjectHolder";
 
 import './project-page.css'
 import Modal from "../../components/ui/modal/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JoinForm from "./JoinForm";
 import CreateForm from "./CreateForm";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectsPage () {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token || token === 'null') {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const[showJoinModal, setShowJoinModal] = useState(false);
 

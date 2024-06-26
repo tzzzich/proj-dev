@@ -13,6 +13,8 @@ import store from './utils/redux/store'
 
 const App = () => {
 
+  const isAuth = !!localStorage.getItem('token');
+
   const router = createBrowserRouter([
     {
       path:  ROUTES.ROOT,
@@ -20,11 +22,11 @@ const App = () => {
       children: [
         {
           path: ROUTES.ROOT,
-          element: <LoginPage />,
+          element: isAuth? <ProjectsPage /> : <LoginPage />,
         },
         {
           path: ROUTES.REGISTRATION,
-          element: <RegisterPage />,
+          element:  <RegisterPage />,
         },
         {
           path: ROUTES.LOGIN,

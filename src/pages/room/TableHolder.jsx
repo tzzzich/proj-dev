@@ -330,8 +330,8 @@ const TableHolder = ({room, users, allTables}) => {
         <div className="table-holder">
             <h3>Table name: {tableName} <EditIcon className="edit-icon"/></h3>
             <div className="add-lang">
-                <button onClick={addColumn}>Add Column</button>
-                <input type={'text'} id={'999999999'}/>
+                <button onClick={addColumn}>Add Language</button>
+                <input type={'text'} placeholder={'Language'} id={'999999999'}/>
             </div>
             <div className="table-picker">
                 <select 

@@ -29,7 +29,19 @@ export async function getProfile () {
       localStorage.setItem("email", response.data.email)
       return response;
     } catch (error) {
+      localStorage.setItem("token", null);
       console.log(error);
       throw error.response.data.message;
     }
   }
+
+
+  export const logout = async () => {
+    try {
+        const response = await api.post('/users/logout');
+        localStorage.setItem("token", null);
+        return response.data;
+    } catch (error) {
+        throw error.response.data.message;
+    }
+};

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import SponsorInfo from '../../components/sponsor-info/SponsorInfo';
@@ -12,6 +12,12 @@ import './welcome-page.css'
 export default function RegisterPage({}) {
   const methods = useForm();
   const navigate = useNavigate();
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token != 'null') {
+          navigate('/projects');
+      }
+}, [navigate]);
 
   const [error, setErrors] = useState(null)
 

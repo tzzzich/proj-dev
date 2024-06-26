@@ -49,13 +49,16 @@
 .add-lang{
     display:flex;
     height: 55px;
-    background-color: var(--base-color);
+    width: 350px;
     justify-content: space-evenly;
     align-items: center;
     button{
         height: 40px;
-        width: 100px;
+        width: 120px;
         font-size:16px;
+    }
+    input{
+        border: 1px solid var(--base-color);
     }
 }
 
