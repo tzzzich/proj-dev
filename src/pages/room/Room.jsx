@@ -23,6 +23,7 @@ import RenameTableForm from "./RenameTableForm";
 import LanguagePickForm from "./LanguagePickForm";
 import DropdownOptions from "../../components/dropdown-menu/Dropdown.Options";
 import swal from "sweetalert";
+import AddForm from "./AddForm";
 
 let editUser = true
 let myColumns = [
@@ -91,7 +92,7 @@ export default function RoomPage () {
         const [usersResponse, roomResponse, tablesResponse ] = await Promise.all(
           [getUsers(roomId), getRoom(roomId), getTables(roomId)]
         );
-        console.log(usersResponse, roomResponse, tablesResponse);
+        //console.log(usersResponse, roomResponse, tablesResponse);
         setUsers(usersResponse.users);
         setRoom(roomResponse);
         setAllTables(tablesResponse.tables);
@@ -156,24 +157,29 @@ export default function RoomPage () {
       }
   }, [socket, table])
 
-  const addColumn = () => {
-      const title = document.getElementById('999999999').value
-      myColumns.push({});
-      socket.emit("send-cols", myColumns, title)
-  }
-
 
   const [showRenameRoomModal, setShowRenameRoomModal] = useState(false);
   const [showRenameTableModal, setShowRenameTableModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showLangModal, setShowLangModal] = useState(false);
+  const [showColModal, setShowColModal] = useState(false);
+  const [showTableModal, setShowTableModal] = useState(false);
 
   function toggleRenameRoomModal() {
     setShowRenameRoomModal(!showRenameRoomModal);
   }
+  function toggleShowColModal() {
+    setShowColModal(!showColModal);
+  }
+
   function toggleLangModal() {
     setShowLangModal(!showLangModal);
   }
+
+  function toggleTableModal() {
+    setShowTableModal(!showTableModal);
+  }
+
   function toggleRenameTableModal() {
     setShowRenameTableModal(!showRenameTableModal);
   }
@@ -191,27 +197,17 @@ export default function RoomPage () {
     socket.emit("send-cols", myColumns, title, translationCol, languageFrom, languageTo)
   }
 
-  //     const roomResponse = await axios.post(`http://158.160.147.53:6868/translate/translate`, {sourceLanguageCode: "de", folderId: "b1gbi9p05hufm79d5rlo", texts: textForTranslate, targetLanguageCode: document.getElementById("selectlanguage").options[ document.getElementById("selectlanguage").selectedIndex ].value}, {
-  //         headers: {
-  //             "Authorization": "Bearer t1.9euelZqWx8ablp7HlJ6Xy5yXnpuLze3rnpWax56dm4zJy8jHmIvGy87Ki5vl9PdqKhVM-e9dKjiV3fT3KlkSTPnvXSo4lc3n9euelZrOjZOVlZzHnsjGlZaejcjMyu_8xeuelZrOjZOVlZzHnsjGlZaejcjMyg.eBRXiNZiaYbPYY5NHsqmmkDVac15GZF0rcNZZg3Zwzqvuein4foe0ba9OivbfkLAtrS32fVwNJA8YZP0kJsyBQ"
-  //         }
+    const addColumn = (data) => {
+        const title = data.title;
+        myColumns.push({});
+        socket.emit("send-cols", myColumns, title)
+    }
 
-  //     })
-  //     console.log(roomResponse.data.message.translations)
-  //     let translator = roomResponse.data.message.translations.map(item => item.text);
-
-  //     console.log(translator);
-
-  //     myColumns.push({})
-
-
-  // }
-
-  const deleteColumn = () => {
-      if(myColumns.length <= 2) return
-      myColumns.pop()
-      socket.emit("send-cols", myColumns)
-  }
+    const deleteColumn = () => {
+        if(myColumns.length <= 2) return
+        myColumns.pop()
+        socket.emit("send-cols", myColumns)
+    }
 
   useEffect(() => {
       if (socket == null || table == null) return
@@ -262,8 +258,9 @@ export default function RoomPage () {
       socket.emit("save-document", table.getSourceData(), myColumns)
   }
 
-  const addTable = async () => {
-      const name = document.getElementById('333').value
+  const addTable = async (data) => {
+        console.log(data.name);
+      const name = data.name;
       const tables = {
           fileName: name,
           data: [table.getSourceData()[0]],
@@ -296,17 +293,6 @@ export default function RoomPage () {
       swal("Error!", error.response.data.error, "error");
     }
   }
-
-  // const deleteRoom = async () => {
-  //     await axios.delete(`http://158.160.147.53:6868/rooms/deleteRoom?roomId=${roomId}`, {
-  //         headers: {
-  //             "Authorization": "Bearer " + localStorage.getItem("token")
-  //         }
-  //     })
-  //         .then(() => {
-  //             window.location.pathname = `/`
-  //         })
-  // }
 
   useEffect(() => {
       if (socket == null || table == null) return
@@ -400,8 +386,8 @@ export default function RoomPage () {
                       <button className="header-btn" onClick={() => {navigate('/projects')}}>{'< Go Back'}</button>
                       <button className="header-btn change" onClick={toggleRenameRoomModal}>Room: {room?.name} <EditIcon/></button>
                       <button className="header-btn" onClick={toggleAddUserModal}><UserAddIcon className="icon"/> Add User</button>
-                      <DropdownOptions name={'Table'} onClick1={addTable} onClick2={deleteTable} socket={socket}/>
-                      <DropdownOptions name={'Language'} onClick1={addColumn} onClick2={deleteColumn} socket={socket}/>
+                      <DropdownOptions name={'Table'} onClick1={toggleTableModal} onClick2={deleteTable} socket={socket}/>
+                      <DropdownOptions name={'Language'} onClick1={toggleShowColModal} onClick2={deleteColumn} socket={socket}/>
                       <DropdownOptions name={'Row'} onClick1={addRow} onClick2={deleteRow} socket={socket}/>
                   </div>
                   <div className="part">
@@ -422,6 +408,12 @@ export default function RoomPage () {
               </Modal>
               <Modal show={showLangModal} onClose={toggleLangModal} >
                   <LanguagePickForm closeModal={toggleLangModal} changeLanguage={addColumnWithTranslate} socket={socket}/>
+              </Modal>
+              <Modal show={showColModal} onClose={toggleShowColModal} >
+                  <AddForm closeModal={toggleShowColModal} func={addColumn} name='title' placeholder='Column title'/>
+              </Modal>
+              <Modal show={showTableModal} onClose={toggleTableModal} >
+                  <AddForm closeModal={toggleTableModal} func={addTable} name='name' placeholder='Table name'/>
               </Modal>
           </div>
         )
