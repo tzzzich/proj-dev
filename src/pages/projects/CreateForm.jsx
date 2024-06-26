@@ -9,7 +9,7 @@ import axios from "axios";
 const parseJsonFile = (json) => {
     return json.map((item) => {
         item.columns.unshift(item.labels)
-        if (item.useAttributes) item.columns.push(item.attributes)
+        item.columns.push(item.attributes)
 
         const transformedArray = item.columns.reduce((acc, curr, index) => {
             curr.forEach((value, key) => {

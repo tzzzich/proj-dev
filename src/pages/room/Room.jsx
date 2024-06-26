@@ -21,6 +21,8 @@ import DropdownMenu from "../../components/dropdown-menu/DropdownMenu";
 import AddUserForm from "./AddUserForm";
 import RenameTableForm from "./RenameTableForm";
 import LanguagePickForm from "./LanguagePickForm";
+import DropdownOptions from "../../components/dropdown-menu/Dropdown.Options";
+import swal from "sweetalert";
 
 let editUser = true
 let myColumns = [
@@ -274,11 +276,12 @@ export default function RoomPage () {
       })
           .then(table => {
               socket.emit("send-tables")
-              window.location.pathname = `/room/${roomId}/table/${table.data.tableId}`
+              window.location.pathname = `/projects/${roomId}/table/${table.data.tableId}`
           })
   }
 
   const deleteTable = async () => {
+    try{
       await axios.delete(`http://158.160.147.53:6868/tables/deleteTable?tableId=${tableId}`, {
           headers: {
               "Authorization": "Bearer " + localStorage.getItem("token")
@@ -286,8 +289,12 @@ export default function RoomPage () {
       })
           .then(() => {
               socket.emit("send-tables", tableId)
-              window.location.pathname = `/room/${roomId}/table/${room.main_table}`
+              window.location.pathname = `/projects/${roomId}/table/${room.main_table}`
           })
+    }
+    catch(error) {
+      swal("Error!", error.response.data.error, "error");
+    }
   }
 
   // const deleteRoom = async () => {
@@ -319,7 +326,7 @@ export default function RoomPage () {
 
       const handler = (tableId) => {
           setUpdateTables(prev => !prev)
-          if (tableId !== undefined) window.location.pathname = `/room/${roomId}/table/${room.main_table}`
+          if (tableId !== undefined) window.location.pathname = `/projects/${roomId}/table/${room.main_table}`
       }
       socket.on("receive-tables", handler)
 
@@ -360,45 +367,6 @@ export default function RoomPage () {
       }
   }, [socket, table, room])
 
-  const renameRoom = async () => {
-      const name = document.getElementById('22').value
-      await axios.put(`http://158.160.147.53:6868/rooms/renameRoom?roomId=${roomId}`, {name: name}, {
-          headers: {
-              "Authorization": "Bearer " + localStorage.getItem("token")
-          }
-      })
-          .then(() => {
-              setRoom({...room, name: name})
-              socket.emit("send-room-name", name)
-          })
-  }
-
-  const addUser = async () => {
-      const email = document.getElementById('123456789').value
-      await axios.post(`http://158.160.147.53:6868/rooms/addUser?roomId=${roomId}`, {email: email}, {
-          headers: {
-              "Authorization": "Bearer " + localStorage.getItem("token")
-          }
-      })
-          .then(() => {
-              setUpdateUsers(prev => !prev)
-              socket.emit("send-users")
-          })
-  }
-
-  const deleteUser = async () => {
-      const id = document.getElementById('987654321').value
-      await axios.delete(`http://158.160.147.53:6868/rooms/deleteUserRoom?roomId=${roomId}&user_id=${id}`, {
-          headers: {
-              "Authorization": "Bearer " + localStorage.getItem("token")
-          }
-      })
-          .then(() => {
-              setUpdateUsers(prev => !prev)
-              socket.emit("send-users")
-          })
-  }
-
   useEffect(() => {
       if (socket == null || table == null) return
 
@@ -417,13 +385,6 @@ export default function RoomPage () {
       setRoom({...room, name: data.name})
     }
 
-    function updateTableName(data) {
-      setTableName(data.name)
-      setUpdateTables(prev => !prev)
-      socket.emit("send-table-name", data.name)
-      socket.emit("send-tables")
-    }
-
     async function updateChildUsers() {
       setUpdateUsers(prev => !prev);
     }
@@ -439,7 +400,9 @@ export default function RoomPage () {
                       <button className="header-btn" onClick={() => {navigate('/projects')}}>{'< Go Back'}</button>
                       <button className="header-btn change" onClick={toggleRenameRoomModal}>Room: {room?.name} <EditIcon/></button>
                       <button className="header-btn" onClick={toggleAddUserModal}><UserAddIcon className="icon"/> Add User</button>
-                      <button className="header-btn">+ Add Table</button>
+                      <DropdownOptions name={'Table'} onClick1={addTable} onClick2={deleteTable} socket={socket}/>
+                      <DropdownOptions name={'Language'} onClick1={addColumn} onClick2={deleteColumn} socket={socket}/>
+                      <DropdownOptions name={'Row'} onClick1={addRow} onClick2={deleteRow} socket={socket}/>
                   </div>
                   <div className="part">
                       <DropdownMenu items={users} socket={socket}/>

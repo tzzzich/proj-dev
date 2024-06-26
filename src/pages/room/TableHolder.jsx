@@ -205,6 +205,7 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, ch
         <div className="table-holder">
             <div className="table-info">
                 <h2>Table name: {tableName} <EditIcon className="edit-icon" onClick={changeName}/></h2>
+                <h4>Invitation code: {room?.invitation_code}</h4>
                 <div className="table-picker">
                     <h3>Select table</h3>
                     <select 

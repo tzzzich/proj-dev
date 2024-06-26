@@ -29,7 +29,19 @@
     min-width: 100%;
     z-index: 99999999;
     overflow: hidden;
+
+    &.reg{
+        .dropdown-item{
+            cursor: pointer;
+        }
+    }
 }
+.dropdown-menu{
+    &.reg {
+        max-width: 100px;
+        word-break: break-word;
+    }
+} 
 
 .dropdown-item {
     display: flex;
@@ -63,3 +75,11 @@
 }
 
 
+@media (max-width: 1000px) {
+    .dropdown-menu{
+        &.reg {
+            max-width: 120px;
+            word-break: break-word;
+        }
+    } 
+}
