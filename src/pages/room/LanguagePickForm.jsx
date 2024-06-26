@@ -9,7 +9,7 @@ export default function LanguagePickForm ({closeModal, changeLanguage}) {
     const onSubmit = async(data) => {
         console.log(data);
       try {
-        changeLanguage(data.language);
+        changeLanguage({languageFrom: data.languageFrom, languageTo: data.languageTo});
         closeModal();
       } catch(error) {
         setErrors(error.message);
@@ -24,14 +24,27 @@ export default function LanguagePickForm ({closeModal, changeLanguage}) {
                     <p className='error-message'>{error ? error : ''}</p>
                     
                     <SelectField
-                        name="language"
+                        name="languageFrom"
                         options={[
+                            { value: 'ru', label: 'Russian' },
                             { value: 'en', label: 'English' },
                             { value: 'es', label: 'Spanish' },
                             { value: 'fr', label: 'French' },
                             { value: 'de', label: 'German'},
                         ]}
-                        validation={{ required: 'Language selection is required' }}
+                        validation={{ required: 'Language from selection is required' }}
+                    />
+
+                    <SelectField
+                        name="languageTo"
+                        options={[
+                            { value: 'ru', label: 'Russian' },
+                            { value: 'en', label: 'English' },
+                            { value: 'es', label: 'Spanish' },
+                            { value: 'fr', label: 'French' },
+                            { value: 'de', label: 'German'},
+                        ]}
+                        validation={{ required: 'Language to selection is required' }}
                     />
 
                     <button type="submit">Submit</button>

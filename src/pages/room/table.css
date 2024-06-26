@@ -4,7 +4,7 @@
 
 .table-holder {
     width: 100%;
-    height: 100%;
+    height: calc(92vh - 60px);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -15,9 +15,9 @@
     }
     
     .container{
-        height: 400px;
+        height: 100%;
         width: 100%;
-        overflow:auto;
+        overflow:hidden;
     }
     
 }
@@ -83,5 +83,6 @@
 @media (max-width: 1000px) {
     .table-holder {
         width: calc(100% - 120px);
+        height: 92vh;
     }
 }

@@ -3,7 +3,7 @@ import './file-input.css'
 import UploadIcon from './../../../../assets/icons/upload.svg?react'
 import { useState } from "react";
 
-export default function FileInput ({ name, placeholder, setFile}) {
+export default function FileInput ({ name, placeholder, setFile, required}) {
     const[value, setValue] = useState('');
     const { register, formState: { errors } } = useFormContext();
 
@@ -23,10 +23,10 @@ export default function FileInput ({ name, placeholder, setFile}) {
           <input
             id={name}
             type="file"
-            accept=".zip,.rar,.7z"
+            accept= {required && ".zip,.rar,.7z"}
             {...register(name, 
               {
-                required: `${placeholder} is required`
+                required: required ? `${placeholder} is required` : false
               }
             )}
             className="file-input"

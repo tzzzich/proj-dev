@@ -181,10 +181,12 @@ export default function RoomPage () {
   }
 
   const addColumnWithTranslate = async (language) => {
+    const languageFrom = language.languageFrom;
+    const languageTo = language.languageTo;
     const translationCol = table.getActiveEditor().col
     const title = table.getSourceData()[0][translationCol] + "_Translation"
     myColumns.push({});
-    socket.emit("send-cols", myColumns, title, translationCol, language)
+    socket.emit("send-cols", myColumns, title, translationCol, languageFrom, languageTo)
   }
 
   //     const roomResponse = await axios.post(`http://158.160.147.53:6868/translate/translate`, {sourceLanguageCode: "de", folderId: "b1gbi9p05hufm79d5rlo", texts: textForTranslate, targetLanguageCode: document.getElementById("selectlanguage").options[ document.getElementById("selectlanguage").selectedIndex ].value}, {
@@ -423,18 +425,8 @@ export default function RoomPage () {
     }
 
     async function updateChildUsers() {
-      setUpdateUsers(true);
+      setUpdateUsers(prev => !prev);
     }
-
-
-    // const { roomId, tableId } = useParams();
-    // const navigate = useNavigate();
-    // const user = useSelector((state) => state.user);
-    // const [users, setUsers] = useState([]);
-    // const [room, setRoom] = useState();
-    // const [tables, setTables] = useState([]);
-    // const [loading, setLoading] = useState(false);
-    // const [isAdmin, setIsAdmin] = useState(false);
 
     return(
         loading ? 
@@ -455,7 +447,7 @@ export default function RoomPage () {
                       <button className="header-btn translate" onClick={toggleLangModal}><TranslateIcon /> Auto Translate</button>
                   </div>
               </header>   
-              <TableHolder room={room} allTables={allTables} users={users} myRow={myRow} socket={socket} table={table} setTable={setTable} changeName={toggleRenameTableModal}/>
+              <TableHolder room={room} allTables={allTables} users={users} myRow={myRow} socket={socket} table={table} setTable={setTable} tableName={tableName} changeName={toggleRenameTableModal}/>
               <Modal show={showRenameRoomModal} onClose={toggleRenameRoomModal} >
                   <ChangeRoomNameForm closeModal={toggleRenameRoomModal} updateName={updateName} currentName={room?.name} socket={socket}/>
               </Modal>
@@ -468,7 +460,6 @@ export default function RoomPage () {
               <Modal show={showLangModal} onClose={toggleLangModal} >
                   <LanguagePickForm closeModal={toggleLangModal} changeLanguage={addColumnWithTranslate} socket={socket}/>
               </Modal>
-
           </div>
         )
     );

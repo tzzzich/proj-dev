@@ -29,9 +29,8 @@ const findCell = (col, row) => {
     return filteredElements[0]
 }
 
-const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, changeName}) => {
+const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, changeName, tableName}) => {
     const { roomId, tableId } = useParams()
-    const [tableName, setTableName] = useState(null)
     const [updateTables, setUpdateTables] = useState(false)
     const [rowAndCol, setRowAndCol] = useState([]);
     const dataTable = ["Loading..."]
@@ -41,28 +40,6 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, ch
     const token = localStorage.getItem('token');
     const userId = useSelector((state) => state.user.id);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (socket == null || table == null || users == null || userId == null) return
-  
-        socket.once("load-document", (tableExist, data, columns, name) => {
-            if (!tableExist) return
-  
-            myRow = data
-            table.loadData(data)
-            myColumns = columns
-  
-            setTableName(name)
-  
-            table.updateSettings({
-                columns: myColumns
-            })
-  
-            setRowAndCol(users.map((item) => ({id: item._id, row: null, col: null})))
-        })
-  
-        socket.emit("get-document", tableId, roomId)
-    }, [socket, table, tableId, users, userId])
 
 
     useEffect(() => {
@@ -206,8 +183,13 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, ch
             colHeaders: true,
             rowHeaders: true,
             autoRowSize: true,
+            manualColumnResize: true,
+            colWidths: 250,
+            autoColumnSize: false,
             trimWhitespace: false,
-            fixedRowsTop: 1
+            fixedRowsTop: 1,
+
+
         })
 
         setTable(t)

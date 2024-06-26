@@ -44,17 +44,19 @@ const parseJsonFile = (json) => {
 export default function CreateForm ({closeModal}) {
     const [error, setErrors] = useState(null)
     const[file, setFile] = useState(null);
+    const[otherFile, setOtherFile] = useState(null);
 
     const methods = useForm();
     const navigate = useNavigate();
 
-    const onSubmit = async (data) => {
-        console.log(data);
+    const onSubmit = async (dataForm) => {
+        console.log(dataForm);
         console.log(file);
+        console.log(otherFile);
         let formData = new FormData();
         formData.append("zipWithMsbts", file); 
+        formData.append("msbpFile", otherFile); 
         try {
-            data.zipWithMsbts = file;
             await axios.post("http://158.160.147.53:2223/api/msbt/zipToSheets", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -63,12 +65,16 @@ export default function CreateForm ({closeModal}) {
                 .then(async (fileStr) => {
                     const tables = parseJsonFile(fileStr.data)
     
-                    await axios.post("http://158.160.147.53:6868/rooms/addRoom", {name: data.name, tableData: tables[0]}, {
+                    await axios.post("http://158.160.147.53:6868/rooms/addRoom", {name: dataForm.name, usesMSBP: otherFile != null, tableData: tables[0]}, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem("token")}`
                         }
                     })
                         .then((data) => {
+                            if (tables.length <= 1) {
+                                console.log("+")
+                                navigate(`/projects/${data.data.roomId}/table/${data.data.tableId}`);
+                            }
                             tables.shift()
                             Promise.all(tables.map((item) => {
                                 return axios.post(`http://158.160.147.53:6868/tables/addTable?roomId=${data.data.roomId}`,
@@ -109,6 +115,12 @@ export default function CreateForm ({closeModal}) {
                     setFile={setFile}
                     name={"zipWithMsbts"}
                     placeholder={"Archive with MSBTs"}
+                    required={true}
+                />
+                <FileInput
+                    setFile={setOtherFile}
+                    name={"msbpFile"}
+                    placeholder={"MSBP file"}
                 />
                 <button type="submit">Create</button>
                 </form>
