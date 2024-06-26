@@ -11,7 +11,6 @@ const DropdownMenu = ({ items, socket}) => {
     const [curItems, setCurItems] = useState(items);
 
     const toggleDropdown = () => {
-        console.log(items, curItems);
         setIsOpen(!isOpen);
     };
 

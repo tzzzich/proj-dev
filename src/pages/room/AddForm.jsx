@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputField from '../../components/ui/input/InputField';
 
-export default function AddUserForm ({closeModal, func, name, placeholder}) {
+export default function AddForm ({closeModal, func, name, placeholder}) {
     const [error, setErrors] = useState(null)
 
     const methods = useForm();
@@ -20,7 +20,7 @@ export default function AddUserForm ({closeModal, func, name, placeholder}) {
 
     return (
         <div className="form">
-            <h2>Add user</h2>
+            <h2>{placeholder}</h2>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <p className='error-message'>{error? error : ''}</p>

@@ -22,6 +22,7 @@ import RenameTableForm from "./RenameTableForm";
 import LanguagePickForm from "./LanguagePickForm";
 import DropdownOptions from "../../components/dropdown-menu/Dropdown.Options";
 import swal from "sweetalert";
+import AddForm from "./AddForm";
 
 let myColumns = [
     {
@@ -136,23 +137,29 @@ export default function RoomPage () {
       }
   }, [socket, table])
 
-  const addColumn = () => {
-      const title = document.getElementById('999999999').value
-      myColumns.push({});
-      socket.emit("send-cols", myColumns, title)
-  }
 
   const [showRenameRoomModal, setShowRenameRoomModal] = useState(false);
   const [showRenameTableModal, setShowRenameTableModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showLangModal, setShowLangModal] = useState(false);
+  const [showColModal, setShowColModal] = useState(false);
+  const [showTableModal, setShowTableModal] = useState(false);
 
   function toggleRenameRoomModal() {
     setShowRenameRoomModal(!showRenameRoomModal);
   }
+  function toggleShowColModal() {
+    setShowColModal(!showColModal);
+  }
+
   function toggleLangModal() {
     setShowLangModal(!showLangModal);
   }
+
+  function toggleTableModal() {
+    setShowTableModal(!showTableModal);
+  }
+
   function toggleRenameTableModal() {
     setShowRenameTableModal(!showRenameTableModal);
   }
@@ -176,11 +183,17 @@ export default function RoomPage () {
     socket.emit("send-cols", myColumns, title, translationCol, languageFrom, languageTo)
   }
 
-  const deleteColumn = () => {
-      if(myColumns.length <= 2) return
-      myColumns.pop()
-      socket.emit("send-cols", myColumns)
-  }
+    const addColumn = (data) => {
+        const title = data.title;
+        myColumns.push({});
+        socket.emit("send-cols", myColumns, title)
+    }
+
+    const deleteColumn = () => {
+        if(myColumns.length <= 2) return
+        myColumns.pop()
+        socket.emit("send-cols", myColumns)
+    }
 
   useEffect(() => {
       if (socket == null || table == null) return
@@ -235,8 +248,9 @@ export default function RoomPage () {
       socket.emit("save-document", table.getSourceData(), myColumns)
   }
 
-  const addTable = async () => {
-      const name = document.getElementById('333').value
+  const addTable = async (data) => {
+        console.log(data.name);
+      const name = data.name;
       const tables = {
           fileName: name,
           data: [table.getSourceData()[0]],
@@ -362,8 +376,8 @@ export default function RoomPage () {
                       <button className="header-btn" onClick={() => {navigate('/projects')}}>{'< Go Back'}</button>
                       <button className="header-btn change" onClick={toggleRenameRoomModal}>Room: {room?.name} <EditIcon/></button>
                       <button className="header-btn" onClick={toggleAddUserModal}><UserAddIcon className="icon"/> Add User</button>
-                      <DropdownOptions name={'Table'} onClick1={addTable} onClick2={deleteTable} socket={socket}/>
-                      <DropdownOptions name={'Language'} onClick1={addColumn} onClick2={deleteColumn} socket={socket}/>
+                      <DropdownOptions name={'Table'} onClick1={toggleTableModal} onClick2={deleteTable} socket={socket}/>
+                      <DropdownOptions name={'Language'} onClick1={toggleShowColModal} onClick2={deleteColumn} socket={socket}/>
                       <DropdownOptions name={'Row'} onClick1={addRow} onClick2={deleteRow} socket={socket}/>
                   </div>
                   <div className="part">
@@ -385,6 +399,12 @@ export default function RoomPage () {
               </Modal>
               <Modal show={showLangModal} onClose={toggleLangModal} >
                   <LanguagePickForm closeModal={toggleLangModal} changeLanguage={addColumnWithTranslate} socket={socket}/>
+              </Modal>
+              <Modal show={showColModal} onClose={toggleShowColModal} >
+                  <AddForm closeModal={toggleShowColModal} func={addColumn} name='title' placeholder='Column title'/>
+              </Modal>
+              <Modal show={showTableModal} onClose={toggleTableModal} >
+                  <AddForm closeModal={toggleTableModal} func={addTable} name='name' placeholder='Table name'/>
               </Modal>
           </div>
         )
