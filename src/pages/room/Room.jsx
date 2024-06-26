@@ -64,7 +64,7 @@ export default function RoomPage () {
   const [updateUsers, setUpdateUsers] = useState(false)
   const [rowAndCol, setRowAndCol] = useState(null)
   const [loading, setLoading] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState();
 
   const dataTable = ["Loading..."]
   const userId = useSelector((state) => state.user.id);
@@ -384,14 +384,14 @@ export default function RoomPage () {
               <header className="room-header">
                   <div className="part">
                       <button className="header-btn" onClick={() => {navigate('/projects')}}>{'< Go Back'}</button>
-                      <button className="header-btn change" onClick={toggleRenameRoomModal}>Room: {room?.name} <EditIcon/></button>
-                      <button className="header-btn" onClick={toggleAddUserModal}><UserAddIcon className="icon"/> Add User</button>
+                      <button className="header-btn change" onClick={isAdmin && toggleRenameRoomModal}>Room: {room?.name} {isAdmin && <EditIcon/>}</button>
+                      {isAdmin && <button className="header-btn" onClick={ toggleAddUserModal}><UserAddIcon className="icon"/> Add User</button>}
                       <DropdownOptions name={'Table'} onClick1={toggleTableModal} onClick2={deleteTable} socket={socket}/>
                       <DropdownOptions name={'Language'} onClick1={toggleShowColModal} onClick2={deleteColumn} socket={socket}/>
                       <DropdownOptions name={'Row'} onClick1={addRow} onClick2={deleteRow} socket={socket}/>
                   </div>
                   <div className="part">
-                      <DropdownMenu items={users} socket={socket}/>
+                      <DropdownMenu items={users} socket={socket} isAdmin={isAdmin}/>
                       <button className="header-btn translate"><DownloadIcon/> Download as MSBTs</button>
                       <button className="header-btn translate" onClick={toggleLangModal}><TranslateIcon /> Auto Translate</button>
                   </div>

@@ -2,7 +2,7 @@ import { api } from "../instance";
 
 export const getRooms = async () => {
   try {
-    const response = await api.get('/rooms/getRooms');
+    const response = await api.get('/rooms/getUserRooms');
     return response.data;
   } catch (error) {
     console.log(error);
@@ -58,7 +58,7 @@ export const renameRoom = async (roomId, data) => {
 
 export const deleteRoom = async (roomId) => {
   try {
-    const response = await api.delete(`/rooms/deleteRoom?roomId=${roomId}`);
+    const response = await api.delete(`rooms/deleteRoom?roomId=${roomId}`);
     return response.data;
   } catch (error) {
     console.log(error);
