@@ -10,6 +10,7 @@ import { ROUTES } from "./utils/constants/router";
 
 import { Provider } from 'react-redux'
 import store from './utils/redux/store'
+import ProfilePage from "./pages/profile/ProfilePage";
 
 const App = () => {
 
@@ -39,6 +40,10 @@ const App = () => {
         {
           path: ROUTES.ROOM,
           element: <RoomPage />,
+        },
+        {
+          path: ROUTES.PROFILE,
+          element: <ProfilePage />,
         },
 
       ],

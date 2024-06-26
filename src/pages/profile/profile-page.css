@@ -1,0 +1,22 @@
+.input-form-wrapper{
+    &.profile {
+
+        .form-wrapper {
+            height: 350px;
+        }
+        button{
+            margin:0;
+        }
+        h2{
+            margin-top: 30px;
+        }
+    }
+}
+
+.profile-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

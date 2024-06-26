@@ -4,5 +4,6 @@ export const ROUTES = {
     REGISTRATION: '/register',
     PROJECTS: '/projects',
     ROOM: '/projects/:roomId/table/:tableId',
+    PROFILE: '/profile',
   };
   
