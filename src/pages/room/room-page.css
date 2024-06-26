@@ -1,0 +1,116 @@
+button {
+    &.header-btn {
+        height: 100%;
+        width: max-content;
+        display:flex;
+        align-items: center;
+        border-radius: 0;
+        padding: 12px 20px;
+        cursor:pointer;
+        width:auto;
+        font-size: 16px;
+
+        color: var(--base-color);
+
+        svg{
+            margin-right: 10px;
+            min-width: 25px;
+            min-height: 25px;
+            max-width: 25px;
+            max-height: 25px;
+        }
+
+        &.translate {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            text-align:left;
+            max-width: 130px;
+            padding: 10px;
+
+
+            svg{
+                margin-right: 5px;
+            }
+        }
+
+        &.change {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 150px;
+            word-break: break-word;
+            background-color: transparent;
+
+            svg{
+                margin-left: 5px;
+                margin-right: 0;
+            }
+        }
+
+        &:hover {
+            color: var(--accent-color);
+            &.translate {
+                svg path{
+                    fill: var(--accent-color);
+                    transition: all 0.5s ease-in-out;
+                }
+            }
+
+            &.change{
+                background-color: var(--secondary-color);
+                color: var(--text-color);
+            }
+            
+        }
+    }
+}
+
+
+.room-header{
+    .part{
+        display: flex;
+        
+        height:100%;
+        width: auto;
+    }
+}
+
+.room {
+    width: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1000px) {
+    .room-header {
+        flex-direction: column;
+        height: 92vh;
+        width:120px;
+
+        .part{
+            height: auto;
+        }
+    }
+    button {
+        &.header-btn {
+            height: max-content;
+            width:120px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    .part{
+        flex-direction: column;
+    }
+
+    .room{
+        flex-direction: row;
+    }
+}
+
+.icon{
+    margin-right: 5px;
+}
