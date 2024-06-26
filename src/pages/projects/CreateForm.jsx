@@ -32,9 +32,9 @@ const parseJsonFile = (json) => {
             useAttributes: item.useAttributes,
             useAttributeStrings: item.useAttributeStrings,
             bytesPerAttribute: item.bytesPerAttribute,
+            hashSlotCount: item.hashSlotCount,
             atO1Numbers: item.atO1Numbers,
             encoding: item.encoding,
-            attributes: item.attributes,
             data: transformedArray,
             columns: arr
         }

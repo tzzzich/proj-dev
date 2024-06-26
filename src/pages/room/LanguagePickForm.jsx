@@ -26,9 +26,7 @@ export default function LanguagePickForm ({closeModal, changeLanguage}) {
                     <SelectField
                         name="languageFrom"
                         options={[
-                            { value: 'ru', label: 'Russian' },
                             { value: 'en', label: 'English' },
-                            { value: 'es', label: 'Spanish' },
                             { value: 'fr', label: 'French' },
                             { value: 'de', label: 'German'},
                         ]}

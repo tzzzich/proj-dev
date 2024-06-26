@@ -1,23 +1,16 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { useSelector } from 'react-redux';
-import { io } from "socket.io-client"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
-import axios from "axios";
 
 import EditIcon from './../../assets/icons/edit.svg?react'
 
 import './table.css'
 
-const SAVE_INTERVAL_MS = 2000
+let myColumns = [{}]
 
-let myColumns = [
-    {
-        data: '0',
-        type: 'text'
-    }
-]
+let editUser = true
 
 const findCell = (col, row) => {
     const elementsInRange = document.querySelectorAll(`[aria-colindex="${col + 2}"]`)
@@ -29,17 +22,10 @@ const findCell = (col, row) => {
     return filteredElements[0]
 }
 
-const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, changeName, tableName}) => {
-    const { roomId, tableId } = useParams()
-    const [updateTables, setUpdateTables] = useState(false)
-    const [rowAndCol, setRowAndCol] = useState([]);
+const TableHolder = ({room, allTables, socket, table, setTable, changeName, tableName, rowAndCol}) => {
+    const { tableId } = useParams()
     const dataTable = ["Loading..."]
-
-    let editUser = true
-
-    const token = localStorage.getItem('token');
     const userId = useSelector((state) => state.user.id);
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -213,7 +199,7 @@ const TableHolder = ({room, users, allTables, myRow, socket, table, setTable, ch
                         onChange={handleTableChange}
                     >
                         {allTables && allTables.map((item) => (
-                            <option className='option' key={item.id} value={item.id} selected={item.id == tableId}>
+                            <option className='option' key={item.id} value={item.id} selected={item.id === tableId}>
                                 {item.name}
                             </option>
                         ))}
