@@ -3,13 +3,14 @@ import './file-input.css'
 import UploadIcon from './../../../../assets/icons/upload.svg?react'
 import { useState } from "react";
 
-export default function FileInput ({ name, placeholder}) {
+export default function FileInput ({ name, placeholder, setFile}) {
     const[value, setValue] = useState('');
     const { register, formState: { errors } } = useFormContext();
 
     const handleFileChange = (event) => {
       const file = event.target.files[0];
       console.log(file);
+      setFile(file);
       setValue(file ? file.name : null);
     };
     return (
