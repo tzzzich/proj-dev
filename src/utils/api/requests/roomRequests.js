@@ -56,6 +56,20 @@ export const renameRoom = async (roomId, data) => {
   }
 };
 
+export const deleteRoom = async (roomId) => {
+  try {
+    const response = await api.delete(`/rooms/deleteRoom?roomId=${roomId}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error.response.data.message) 
+    {
+      throw error.response.data.message 
+    }
+    throw error.response.data.error;
+  }
+};
+
 export const changeTableName = async (tableId, data) => {
   try {
     const response = await api.put(`/tables/renameTable?tableId=${tableId}`, data);
