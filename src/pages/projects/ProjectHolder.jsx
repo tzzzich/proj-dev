@@ -8,6 +8,8 @@ export default function ProjectHolder () {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const [refetchRooms, setRefetchRooms] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -21,7 +23,11 @@ export default function ProjectHolder () {
         };
     
         fetchData();
-      }, []);
+      }, [refetchRooms]);
+
+      function setRefetch() {
+        setRefetchRooms(prev => !prev);
+      }
 
     return (
       <div className="project-holder">
@@ -32,7 +38,7 @@ export default function ProjectHolder () {
                 {
                   projects ?
                     projects.map(project =>
-                        <ProjectListItem project={project} key={project._id}/>
+                        <ProjectListItem project={project} key={project._id} setRefetch={setRefetch}/>
                     )
                     :
                     'You don\'t have any projects yet'
