@@ -34,10 +34,10 @@ const TableHolder = ({room, users, allTables}) => {
 
     const [socket, setSocket] = useState()
     const [table, setTable] = useState()
-    const [dataTable, setDataTable] = useState(["Loading..."])
     const [tableName, setTableName] = useState(null)
     const [updateTables, setUpdateTables] = useState(false)
     const [rowAndCol, setRowAndCol] = useState([]);
+    const dataTable = ["Loading..."]
 
     let editUser = true
 
@@ -56,37 +56,20 @@ const TableHolder = ({room, users, allTables}) => {
         setSocket(s)
         localStorage.setItem('roomId', roomId)
 
-        setDataTable([
-            "English",
-            "I'm a hero",
-            "I'm a villain",
-            "I'm a boy",
-            "I'm a girl",
-            "I'm a man",
-            "I'm a women",
-            "I'm a cat",
-            "I'm a dog",
-            "I'm a bird",
-            "I'm a animal"
-        ])
-
         return () => {
             s.disconnect()
         }
     }, [])
 
     useEffect(() => {
-        if (socket == null || table == null || dataTable[0] === "Loading..." || users == null || userId == null) return
+        if (socket == null || table == null || users == null || userId == null) return
 
         socket.once("load-document", (tableExist, data, columns, name) => {
             if (!tableExist) return
 
-            if (data === null) {
-                table.loadData(dataTable.map(items => ({0: items})))
-            } else {
-                table.loadData(data)
-                myColumns = columns
-            }
+            myRow = data
+            table.loadData(data)
+            myColumns = columns
 
             setTableName(name)
 
@@ -94,12 +77,11 @@ const TableHolder = ({room, users, allTables}) => {
                 columns: myColumns
             })
 
-            const dataRowAndCol = users.map((item) => ({id: item._id, row: null, col: null}))
-            setRowAndCol(dataRowAndCol)
+            setRowAndCol(users.map((item) => ({id: item._id, row: null, col: null})))
         })
 
         socket.emit("get-document", tableId, roomId)
-    }, [socket, table, tableId, roomId, dataTable, users, userId])
+    }, [socket, table, tableId, users, userId])
 
     useEffect(() => {
         if (socket == null || table == null) return

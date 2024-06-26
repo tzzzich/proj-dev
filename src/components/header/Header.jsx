@@ -64,7 +64,7 @@ export default function Header () {
         }, [email]);
     return (
         <header>
-            <p>{'[Logo]'}</p>
+            <p onClick={() => navigate('/')}>{'[Logo]'}</p>
             {localStorage.getItem('token') != 'null' &&
             <div className="auth-header">
                 <p className="logout" onClick={callAlert}>Logout</p>

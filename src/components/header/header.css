@@ -16,6 +16,7 @@ header {
 
     p {
         padding: 10px;
+        cursor:pointer; cursor:pointer;
 
         &.email {
             font-size:18px;
