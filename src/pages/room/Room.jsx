@@ -356,6 +356,12 @@ export default function RoomPage () {
 
     const deleteColumn = () => {
         if(myColumns.length <= 2) return
+
+        for (const place of rowAndCol) {
+            const len = myColumns.length
+            if (place.col != null && place.col >= len - 2) return
+        }
+
         myColumns.pop()
         socket.emit("send-cols", myColumns)
     }
@@ -418,6 +424,11 @@ export default function RoomPage () {
       if (myRow.length <= 1) return
 
       myRow.pop();
+
+      for (const place of rowAndCol) {
+          const len = table.getSourceData().length
+          if (place.row != null && place.row >= len - 1) return
+      }
 
       table.updateSettings({
           data: myRow
