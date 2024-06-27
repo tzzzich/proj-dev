@@ -114,7 +114,7 @@ export default function RoomPage () {
     };
 
     fetchData();
-  }, [updateTables, updateUsers]);//РАЗДЕЛИТЬ 
+  }, [updateTables, updateUsers, userId]);//РАЗДЕЛИТЬ
 
   useEffect(() => {
     if (socket == null || table == null || users == null || userId == null) return
