@@ -2,7 +2,7 @@ import { api } from "../instance";
 
 export const getRooms = async () => {
   try {
-    const response = await api.get('/rooms/getRooms');
+    const response = await api.get('/rooms/getUserRooms');
     return response.data;
   } catch (error) {
     console.log(error);
@@ -27,7 +27,7 @@ export const getRoom = async (roomId) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    ocalStorage.setItem('token', null);
+    localStorage.setItem('token', null);
     throw error.response.data.message;
   }
 };

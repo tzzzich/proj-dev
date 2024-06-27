@@ -3,7 +3,7 @@ import './file-input.css'
 import UploadIcon from './../../../../assets/icons/upload.svg?react'
 import { useState } from "react";
 
-export default function FileInput ({ name, placeholder, setFile, required}) {
+export default function FileInput ({ name, placeholder, setFile, required, disabled}) {
     const[value, setValue] = useState('');
     const { register, formState: { errors } } = useFormContext();
 
@@ -29,6 +29,7 @@ export default function FileInput ({ name, placeholder, setFile, required}) {
                 required: required ? `${placeholder} is required` : false
               }
             )}
+            disabled={disabled}
             className="file-input"
             onChange={handleFileChange}
           />

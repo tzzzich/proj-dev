@@ -15,7 +15,7 @@ export default function ProjectHolder () {
           try {
             setLoading(true);
             const response = await getRooms();
-            setProjects(response.rooms);
+            setProjects(response.my_rooms);
             setLoading(false);
           } catch (error) {
             console.error('Error fetching data:', error);

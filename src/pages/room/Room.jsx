@@ -1,5 +1,4 @@
 import { getRoom, getTables, getUsers } from "../../utils/api/requests";
-import {  useSelector } from 'react-redux';
 
 import {useEffect, useState} from "react"
 import {io} from "socket.io-client"
@@ -23,6 +22,8 @@ import LanguagePickForm from "./LanguagePickForm";
 import DropdownOptions from "../../components/dropdown-menu/Dropdown.Options";
 import swal from "sweetalert";
 import AddForm from "./AddForm";
+import Handsontable from "handsontable";
+import SaveFile from "./SaveFile.jsx";
 
 let myColumns = [
     {
@@ -31,6 +32,31 @@ let myColumns = [
     }
 ]
 let myRow = []
+let editUser = true
+
+const parseJWT = (token) => {
+    if (token == null) return null
+
+    const base64Url = token.split(".")[1]
+
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''));
+
+    return JSON.parse(jsonPayload)
+}
+
+const findCell = (col, row) => {
+    const elementsInRange = document.querySelectorAll(`[aria-colindex="${col + 2}"]`)
+
+    const filteredElements = Array.from(elementsInRange).filter(elem =>
+        elem.parentElement?.getAttribute('aria-rowindex') == row + 2
+    )
+
+    return filteredElements[0]
+}
 
 export default function RoomPage () {
 
@@ -46,8 +72,8 @@ export default function RoomPage () {
   const [rowAndCol, setRowAndCol] = useState(null)
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState(null)
 
-  const userId = useSelector((state) => state.user.id);
   const navigate = useNavigate();
 
 
@@ -59,6 +85,9 @@ export default function RoomPage () {
           }
       })
       setSocket(s)
+
+      const jsonToken = parseJWT(localStorage.getItem("token"))
+      setUserId(jsonToken == null ? null : jsonToken.userId)
 
       return () => {
           s.disconnect()
@@ -110,7 +139,7 @@ export default function RoomPage () {
   }, [socket, table, tableId, users, userId])
 
   useEffect(() => {
-      if (socket == null || table == null) return
+      if (socket == null || table == null || rowAndCol == null) return
 
       const handler = (cols, data) => {
           const activeEditor = table.getActiveEditor()
@@ -121,6 +150,13 @@ export default function RoomPage () {
           table.updateSettings({
               columns: cols,
               data: data
+          })
+
+          rowAndCol.map((item) => {
+              if (item.col == null || item.row == null) return
+
+              const filteredElements = findCell(item.col, item.row)
+              filteredElements.classList.add('cell-with-custom-border')
           })
 
           if (activeEditor && isOpen) {
@@ -135,8 +171,132 @@ export default function RoomPage () {
       return () => {
           socket.off("receive-cols", handler)
       }
-  }, [socket, table])
+  }, [socket, table, rowAndCol])
 
+    useEffect(() => {
+        if (socket == null || table == null) return
+
+        const handler = delta => {
+            editUser = false
+
+            const activeEditor = table.getActiveEditor()
+            const value = activeEditor == null ? null : activeEditor.getValue()
+            const isOpen = activeEditor == null ? null : activeEditor._opened
+
+            table.setDataAtCell(delta[0], delta[1], delta[2])
+
+            if (activeEditor && isOpen) {
+                activeEditor.beginEditing();
+                activeEditor.setValue(value)
+            }
+        }
+        socket.on("receive-changes", handler)
+
+        return () => {
+            socket.off("receive-changes", handler)
+        }
+    }, [socket, table])
+
+    useEffect(() => {
+        if (socket == null || table == null || rowAndCol == null) return
+
+        const handler = (changes, source) => {
+            if (source !== "edit") return
+
+            rowAndCol.map((item) => {
+                if (item.col == null || item.row == null) return
+
+                const filteredElements = findCell(item.col, item.row)
+                filteredElements.classList.add('cell-with-custom-border')
+            })
+
+            if (!editUser) {
+                editUser = true
+                return
+            }
+
+            socket.emit("send-changes", [changes[0][0], table.propToCol(changes[0][1]), changes[0][3]])
+            socket.emit("save-document", table.getSourceData(), myColumns)
+        }
+        table.addHook('afterChange', handler)
+
+        return () => {
+            Handsontable.hooks.remove('afterChange', handler);
+        }
+    }, [socket, table, rowAndCol])
+
+    useEffect(() => {
+        if (socket == null || table == null || rowAndCol == null) return
+
+        const handler = (row, col, id) => {
+            const otherUser = rowAndCol.find((item) => item.id === id)
+
+            if (otherUser != null && otherUser.row != null && otherUser.col != null) {
+                const oldElements = findCell(otherUser.col, otherUser.row)
+                oldElements.classList.remove('cell-with-custom-border')
+            }
+
+            const filteredElements = findCell(col, row)
+            filteredElements.classList.add('cell-with-custom-border')
+
+            otherUser.col = col
+            otherUser.row = row
+        }
+        socket.on("set-color", handler)
+
+        return () => {
+            socket.off("set-color", handler)
+        }
+    }, [socket, table, rowAndCol])
+
+    useEffect(() => {
+        if (socket == null || table == null) return
+
+        const handler = (row, col) => {
+            socket.emit("click-mouse", row, col, userId)
+        }
+
+        table.addHook('afterSelection', handler)
+
+        return () => {
+            Handsontable.hooks.remove('afterSelection', handler);
+        }
+    }, [socket, table])
+
+    useEffect(() => {
+        if (socket == null || table == null || rowAndCol == null) return
+
+        const handler = (id) => {
+            const otherUser = rowAndCol.find((item) => item.id === id)
+
+            if (otherUser.row !== null && otherUser.col !== null) {
+                const oldElements = findCell(otherUser.col, otherUser.row)
+                oldElements.classList.remove('cell-with-custom-border')
+            }
+
+            otherUser.col = null
+            otherUser.row = null
+        }
+        socket.on("delete-color", handler)
+
+        return () => {
+            socket.off("delete-color", handler)
+        }
+    }, [socket, table, rowAndCol])
+
+    useEffect(() => {
+        if (socket == null || table == null) return
+
+        const handler = () => {
+            socket.emit("no-click-mouse", userId)
+        }
+
+        table.addHook('afterDeselect', handler)
+
+        return () => {
+            Handsontable.hooks.remove('afterDeselect', handler);
+        }
+    }, [socket, table])
 
   const [showRenameRoomModal, setShowRenameRoomModal] = useState(false);
   const [showRenameTableModal, setShowRenameTableModal] = useState(false);
@@ -144,6 +304,7 @@ export default function RoomPage () {
   const [showLangModal, setShowLangModal] = useState(false);
   const [showColModal, setShowColModal] = useState(false);
   const [showTableModal, setShowTableModal] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   function toggleRenameRoomModal() {
     setShowRenameRoomModal(!showRenameRoomModal);
@@ -166,6 +327,10 @@ export default function RoomPage () {
 
   function toggleAddUserModal() {
     setShowAddUserModal(!showAddUserModal);
+  }
+
+  function toggleSaveModal() {
+      setShowSaveModal(!showSaveModal);
   }
 
   const addColumnWithTranslate = async (language) => {
@@ -196,7 +361,7 @@ export default function RoomPage () {
     }
 
   useEffect(() => {
-      if (socket == null || table == null) return
+      if (socket == null || table == null || rowAndCol == null) return
 
       const handler = (rows) => {
           const activeEditor = table.getActiveEditor()
@@ -206,6 +371,13 @@ export default function RoomPage () {
 
           table.updateSettings({
               data: rows
+          })
+
+          rowAndCol.map((item) => {
+              if (item.col == null || item.row == null) return
+
+              const filteredElements = findCell(item.col, item.row)
+              filteredElements.classList.add('cell-with-custom-border')
           })
 
           if (activeEditor && isOpen) {
@@ -218,7 +390,7 @@ export default function RoomPage () {
       return () => {
           socket.off("receive-rows", handler)
       }
-  }, [socket, table])
+  }, [socket, table, rowAndCol])
 
   const addRow = () => {
       myRow = table.getSourceData()
@@ -227,6 +399,13 @@ export default function RoomPage () {
 
       table.updateSettings({
           data: myRow
+      })
+
+      rowAndCol.map((item) => {
+          if (item.col == null || item.row == null) return
+
+          const filteredElements = findCell(item.col, item.row)
+          filteredElements.classList.add('cell-with-custom-border')
       })
 
       socket.emit("send-rows", myRow)
@@ -242,6 +421,13 @@ export default function RoomPage () {
 
       table.updateSettings({
           data: myRow
+      })
+
+      rowAndCol.map((item) => {
+          if (item.col == null || item.row == null) return
+
+          const filteredElements = findCell(item.col, item.row)
+          filteredElements.classList.add('cell-with-custom-border')
       })
 
       socket.emit("send-rows", myRow)
@@ -382,12 +568,12 @@ export default function RoomPage () {
                   </div>
                   <div className="part">
                       <DropdownMenu items={users} socket={socket}/>
-                      <button className="header-btn translate"><DownloadIcon/> Download as MSBTs</button>
+                      <button className="header-btn translate" onClick={toggleSaveModal}><DownloadIcon/> Download as MSBTs</button>
                       <button className="header-btn translate" onClick={toggleLangModal}><TranslateIcon /> Auto Translate</button>
                   </div>
               </header>   
-              <TableHolder room={room} allTables={allTables} socket={socket} table={table} setTable={setTable}
-                           tableName={tableName} changeName={toggleRenameTableModal} rowAndCol={rowAndCol}/>
+              <TableHolder room={room} allTables={allTables} setTable={setTable} tableName={tableName}
+                           changeName={toggleRenameTableModal} tableId={tableId}/>
               <Modal show={showRenameRoomModal} onClose={toggleRenameRoomModal} >
                   <ChangeRoomNameForm closeModal={toggleRenameRoomModal} updateName={updateName} currentName={room?.name} socket={socket}/>
               </Modal>
@@ -405,6 +591,10 @@ export default function RoomPage () {
               </Modal>
               <Modal show={showTableModal} onClose={toggleTableModal} >
                   <AddForm closeModal={toggleTableModal} func={addTable} name='name' placeholder='Table name'/>
+              </Modal>
+              <Modal show={showSaveModal} onClose={toggleSaveModal} >
+                  <SaveFile closeModal={toggleSaveModal} roomId={roomId} roomName={room != null ? room.name : ""}
+                            usesMSBP={room != null ? room.usesMSBP : true}/>
               </Modal>
           </div>
         )

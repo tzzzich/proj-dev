@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from "react"
-import { useSelector } from 'react-redux';
+import { useCallback } from "react"
 import { useParams } from "react-router-dom"
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
@@ -8,152 +7,8 @@ import EditIcon from './../../assets/icons/edit.svg?react'
 
 import './table.css'
 
-let myColumns = [{}]
-
-let editUser = true
-
-const findCell = (col, row) => {
-    const elementsInRange = document.querySelectorAll(`[aria-colindex="${col + 2}"]`)
-
-    const filteredElements = Array.from(elementsInRange).filter(elem =>
-        elem.parentElement?.getAttribute('aria-rowindex') == row + 2
-    )
-
-    return filteredElements[0]
-}
-
-const TableHolder = ({room, allTables, socket, table, setTable, changeName, tableName, rowAndCol}) => {
-    const { tableId } = useParams()
+const TableHolder = ({room, allTables, setTable, changeName, tableName, tableId}) => {
     const dataTable = ["Loading..."]
-    const userId = useSelector((state) => state.user.id);
-
-
-    useEffect(() => {
-        if (socket == null || table == null) return
-  
-        const handler = delta => {
-            editUser = false
-  
-            const activeEditor = table.getActiveEditor()
-            const value = activeEditor == null ? null : activeEditor.getValue()
-            const isOpen = activeEditor == null ? null : activeEditor._opened
-  
-            table.setDataAtCell(delta[0], delta[1], delta[2])
-  
-            if (activeEditor && isOpen) {
-                activeEditor.beginEditing();
-                activeEditor.setValue(value)
-            }
-        }
-        socket.on("receive-changes", handler)
-  
-        return () => {
-            socket.off("receive-changes", handler)
-        }
-    }, [socket, table])
-
-    
-
-    useEffect(() => {
-        if (socket == null || table == null || rowAndCol == null) return
-  
-        const handler = (changes, source) => {
-            if (source !== "edit") return
-  
-            rowAndCol.map((item) => {
-                if (item.col == null || item.row == null) return
-  
-                const filteredElements = findCell(item.col, item.row)
-                filteredElements.classList.add('cell-with-custom-border')
-            })
-  
-            if (!editUser) {
-                editUser = true
-                return
-            }
-  
-            socket.emit("send-changes", [changes[0][0], table.propToCol(changes[0][1]), changes[0][3]])
-            socket.emit("save-document", table.getSourceData(), myColumns)
-        }
-        table.addHook('afterChange', handler)
-  
-        return () => {
-            Handsontable.hooks.remove('afterChange', handler);
-        }
-    }, [socket, table, rowAndCol])
-
-    useEffect(() => {
-        if (socket == null || table == null || rowAndCol == null) return
-  
-        const handler = (row, col, id) => {
-            const otherUser = rowAndCol.find((item) => item.id === id)
-  
-            if (otherUser != null && otherUser.row != null && otherUser.col != null) {
-                const oldElements = findCell(otherUser.col, otherUser.row)
-                oldElements.classList.remove('cell-with-custom-border')
-            }
-  
-            const filteredElements = findCell(col, row)
-            filteredElements.classList.add('cell-with-custom-border')
-  
-            otherUser.col = col
-            otherUser.row = row
-        }
-        socket.on("set-color", handler)
-  
-        return () => {
-            socket.off("set-color", handler)
-        }
-    }, [socket, table, rowAndCol])
-
-    useEffect(() => {
-        if (socket == null || table == null) return
-  
-        const handler = (row, col) => {
-            socket.emit("click-mouse", row, col, userId)
-        }
-  
-        table.addHook('afterSelection', handler)
-  
-        return () => {
-            Handsontable.hooks.remove('afterSelection', handler);
-        }
-    }, [socket, table])
-
-    useEffect(() => {
-        if (socket == null || table == null) return
-  
-        const handler = (id) => {
-            const otherUser = rowAndCol.find((item) => item.id === id)
-  
-            if (otherUser.row !== null && otherUser.col !== null) {
-                const oldElements = findCell(otherUser.col, otherUser.row)
-                oldElements.classList.remove('cell-with-custom-border')
-            }
-  
-            otherUser.col = null
-            otherUser.row = null
-        }
-        socket.on("delete-color", handler)
-  
-        return () => {
-            socket.off("delete-color", handler)
-        }
-    }, [socket, table])
-
-    useEffect(() => {
-        if (socket == null || table == null) return
-  
-        const handler = () => {
-            socket.emit("no-click-mouse", userId)
-        }
-  
-        table.addHook('afterDeselect', handler)
-  
-        return () => {
-            Handsontable.hooks.remove('afterDeselect', handler);
-        }
-    }, [socket, table])
 
 
     const wrapperRef = useCallback(wrapper => {
@@ -173,9 +28,7 @@ const TableHolder = ({room, allTables, socket, table, setTable, changeName, tabl
             colWidths: 250,
             autoColumnSize: false,
             trimWhitespace: false,
-            fixedRowsTop: 1,
-
-
+            fixedRowsTop: 1
         })
 
         setTable(t)
