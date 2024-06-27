@@ -3,10 +3,12 @@ import ProjectIconActive from './../../assets/icons/project-active.svg?react'
 import { Link, useNavigate} from 'react-router-dom';
 import DeleteIcon from './../../assets/icons/delete.svg?react'
 import { deleteRoom } from '../../utils/api/requests';
+import { useSelector } from 'react-redux';
 
 export default function ProjectListItem ({project, setRefetch}) {
 
     const navigate = useNavigate();
+    const userId = useSelector(state => state.user.id);
 
     function callAlert() {
         swal({
@@ -48,7 +50,7 @@ export default function ProjectListItem ({project, setRefetch}) {
                         <h3>{project.name}</h3>
                         
                     </div>
-                <h2 className="delete-project" onClick={callAlert}><DeleteIcon/></h2>
+                {userId == project.creator && <h2 className="delete-project" onClick={callAlert}><DeleteIcon/></h2>}
             </div>
     );
 }

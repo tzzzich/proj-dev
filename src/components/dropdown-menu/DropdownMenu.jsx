@@ -6,7 +6,7 @@ import { deleteUser } from '../../utils/api/requests';
 
 import swal from 'sweetalert';
 
-const DropdownMenu = ({ items, socket}) => {
+const DropdownMenu = ({ items, socket, isAdmin}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [curItems, setCurItems] = useState(items);
 
@@ -40,10 +40,10 @@ const DropdownMenu = ({ items, socket}) => {
                     { curItems? curItems.map(item => (
                         <div className="dropdown-item" key={item._id}>
                             {item.username}
-                            <DeleteIcon
+                            {isAdmin && <DeleteIcon
                                 className="delete-icon"
                                 onClick={() => removeUser(item._id)}
-                            />
+                            />}
                         </div>
                     )) : null}
                 </div>
